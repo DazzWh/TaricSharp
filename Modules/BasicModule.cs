@@ -29,18 +29,15 @@ namespace TaricSharp.Modules
         [Command("roll")]
         [Summary("Rolls a dice between 0 and a max number")]
         public Task RollAsync(
-            [Summary("The max number to roll")]
-            int max) => RollReply(new Random().Next(max));
+            [Summary("The max number to roll")] int max) => RollReply(new Random().Next(max));
 
         [Command("roll")]
         [Summary("Rolls a dice between 0 and a max number")]
         public Task RollAsync(
             [Summary("The min number to roll")] int min,
-            [Summary("The min number to roll")] int max) 
-                => RollReply(new Random().Next(min, max));
+            [Summary("The min number to roll")] int max)
+            => RollReply(new Random().Next(min, max));
 
         private Task<IUserMessage> RollReply(int num) => ReplyAsync($"{Context.User.Username} rolled {num}!");
-
-
     }
 }

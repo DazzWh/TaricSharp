@@ -6,12 +6,12 @@ using Discord.WebSocket;
 
 namespace TaricSharp
 {
-    class Program
+    internal class Program
     {
         private DiscordSocketClient _client;
         private CommandHandler _commandHandler;
 
-        public static void Main(string[] args) 
+        public static void Main(string[] args)
             => new Program().MainAsync().GetAwaiter().GetResult();
 
         public async Task MainAsync()
