@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord;
@@ -27,7 +29,7 @@ namespace TaricSharp.Modules
         [Summary("Changes the colour of user to the colour hex")]
         public async Task ColorAsync([Summary("Hexadecimal colour")] string colorStr)
         {
-            if (!ValidHex(colorStr))
+            if (!ValidHexString(colorStr))
             {
                 await ReplyAsync($"Incorrect hex code {Context.User.Username}!");
                 return;
@@ -38,22 +40,34 @@ namespace TaricSharp.Modules
             var role = CreateRole(Context.User.Username, ColorFromHexString(colorStr));
             if (role.Result == null)
             {
+                // TODO: log errors here
                 return;
             }
 
             await ((SocketGuildUser) Context.User).AddRoleAsync(
                 Context.Guild.GetRole(role.Result.Id)
             );
+
+            // TODO: reorder role above GameRoles
         }
 
-        private bool ValidHex(string hex)
+        private bool ValidHexString(string str)
         {
-            throw new NotImplementedException();
+            var rx = new Regex(@"^#?[A-Fa-f0-9]{6}$");
+            return rx.IsMatch(str);
+
         }
 
         private Color ColorFromHexString(string str)
         {
-            throw new NotImplementedException();
+            if (str.StartsWith("#"))
+                str = str.Substring(1);
+
+            return new Color(
+                Convert.ToInt32(str.Substring(0, 2), 16),
+                Convert.ToInt32(str.Substring(2, 2), 16),
+                Convert.ToInt32(str.Substring(4, 2), 16)
+            );
         }
 
         private async Task RemoveNonGameColoredRolesFromUser(SocketUser contextUser)
