@@ -18,7 +18,7 @@ namespace TaricSharp.Modules
     /// </summary>
     public class RoleModule : ModuleBase<SocketCommandContext>
     {
-        private readonly Color GameRoleColor = new Color();
+        private readonly Color GameRoleColor = new Color(); //TODO: Add color before testing...
 
         [Command("colour")]
         [Summary("Changes the colour of user to the colour hex")]
@@ -48,7 +48,11 @@ namespace TaricSharp.Modules
                 Context.Guild.GetRole(role.Result.Id)
             );
 
-            // TODO: reorder role above GameRoles
+            var gameRoleCount = Context.Guild.Roles.Count(r => r.Color == GameRoleColor);
+            var roleCount = Context.Guild.Roles.Count;
+
+            await Context.Guild.GetRole(role.Result.Id)
+                .ModifyAsync(x => x.Position = roleCount - gameRoleCount);
         }
 
         private bool ValidHexString(string str)
