@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord;
@@ -18,7 +20,7 @@ namespace TaricSharp.Modules
     /// </summary>
     public class RoleModule : ModuleBase<SocketCommandContext>
     {
-        private readonly Color GameRoleColor = new Color(); //TODO: Add color before testing...
+        private readonly Color GameRoleColor = new Color(0x8787c5);
 
         [Command("colour")]
         [Summary("Changes the colour of user to the colour hex")]
@@ -44,15 +46,13 @@ namespace TaricSharp.Modules
                 return;
             }
 
-            await ((SocketGuildUser) Context.User).AddRoleAsync(
-                Context.Guild.GetRole(role.Result.Id)
-            );
+            await role.Result.ModifyAsync(x =>
+                x.Position = Context.Guild.Roles.Count(r => r.Color == GameRoleColor) + 1);
 
-            var gameRoleCount = Context.Guild.Roles.Count(r => r.Color == GameRoleColor);
-            var roleCount = Context.Guild.Roles.Count;
-
-            await Context.Guild.GetRole(role.Result.Id)
-                .ModifyAsync(x => x.Position = roleCount - gameRoleCount);
+            if (Context.User is IGuildUser user)
+            {
+                await user.AddRoleAsync(role.Result);
+            }
         }
 
         private bool ValidHexString(string str)
