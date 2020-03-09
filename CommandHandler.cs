@@ -2,6 +2,7 @@
 using Discord.WebSocket;
 using System.Reflection;
 using System.Threading.Tasks;
+using TaricSharp.Modules;
 
 namespace TaricSharp
 {
@@ -26,11 +27,15 @@ namespace TaricSharp
             // service provider is required to be passed into the
             // module registration method to inject the 
             // required dependencies.
-            //
+
             // If you do not use Dependency Injection, pass null.
             // See Dependency Injection guide for more information.
             await _commands.AddModulesAsync(assembly: Assembly.GetEntryAssembly(),
-                                            services: null);
+                services: null);
+
+            // Not using dependency injection yet so manually add modules with dependencies
+            var aboutModule = new AboutModule(_commands);
+            await _commands.AddModuleAsync(aboutModule);
         }
 
         private async Task HandleCommandAsync(SocketMessage messageParam)
@@ -44,7 +49,7 @@ namespace TaricSharp
 
             // Determine if the message is a command based on the prefix and make sure no bots trigger commands
             if (!(message.HasCharPrefix('!', ref argPos) ||
-                message.HasMentionPrefix(_client.CurrentUser, ref argPos)) ||
+                  message.HasMentionPrefix(_client.CurrentUser, ref argPos)) ||
                 message.Author.IsBot)
                 return;
 

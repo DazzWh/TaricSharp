@@ -22,14 +22,11 @@ namespace TaricSharp.Modules
     {
         private readonly Color GameRoleColor = new Color(0x8787c5);
 
-        [Command("colour")]
-        [Summary("Changes the colour of user to the colour hex")]
-        public async Task ColourAsync([Summary("Hexadecimal colour")] string colorStr)
-            => await ColorAsync(colorStr);
-
         [Command("color")]
+        [Alias("Colour")]
         [Summary("Changes the colour of user to the colour hex")]
-        public async Task ColorAsync([Summary("Hexadecimal colour")] string colorStr)
+        public async Task ColorAsync(
+            [Summary("Hexadecimal colour")] string colorStr)
         {
             if (!ValidHexString(colorStr))
             {
