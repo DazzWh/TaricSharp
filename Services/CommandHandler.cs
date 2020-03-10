@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
 
 namespace TaricSharp.Services
 {
+    /// <summary>
+    /// A service that handles the MessageReceived events from the client
+    /// </summary>
     public class CommandHandler
     {
         private readonly DiscordSocketClient _client;
@@ -16,8 +20,12 @@ namespace TaricSharp.Services
             _client = client;
             _commands = commands;
             _services = services;
+        }
 
+        public async Task Initialize()
+        {
             _client.MessageReceived += HandleCommandAsync;
+            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
         }
         
         private async Task HandleCommandAsync(SocketMessage messageParam)
@@ -55,5 +63,7 @@ namespace TaricSharp.Services
             // if (!result.IsSuccess)
             // await context.Channel.SendMessageAsync(result.ErrorReason);
         }
+
+        
     }
 }

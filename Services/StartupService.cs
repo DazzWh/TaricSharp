@@ -7,20 +7,23 @@ using Discord.WebSocket;
 
 namespace TaricSharp.Services
 {
+    /// <summary>
+    /// A service to start the bot and initialize other dependencies
+    /// </summary>
     public class StartupService
     {
-        private readonly IServiceProvider _provider;
         private readonly DiscordSocketClient _discord;
         private readonly CommandService _commands;
+        private readonly IServiceProvider _service;
 
         public StartupService(
-            IServiceProvider provider,
             DiscordSocketClient discord,
-            CommandService commands)
+            CommandService commands,
+            IServiceProvider service)
         {
-            _provider = provider;
             _discord = discord;
             _commands = commands;
+            _service = service;
         }
 
         public async Task StartAsync()
@@ -28,7 +31,7 @@ namespace TaricSharp.Services
             await _discord.LoginAsync(TokenType.Bot, 
                 Environment.GetEnvironmentVariable("DiscordToken"));     
             await _discord.StartAsync();
-            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _provider);
+            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _service);
         }
     }
 }
