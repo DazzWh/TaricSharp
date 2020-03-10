@@ -30,7 +30,13 @@ namespace TaricSharp.Modules
         {
             if (!ValidHexString(colorStr))
             {
-                await ReplyAsync($"Incorrect hex code {Context.User.Username}!");
+                await ReplyAsync($"Incorrect hex code {Context.User.Username}");
+                return;
+            }
+            
+            if (ColorFromHexString(colorStr) == GameRoleColor)
+            {
+                await ReplyAsync($"Sorry, that colour is reserved for GameRoles {Context.User.Username}");
                 return;
             }
 
@@ -88,7 +94,7 @@ namespace TaricSharp.Modules
 
         private async Task<RestRole> CreateRole(string name, Color color)
         {
-            return await Context.Guild.CreateRoleAsync(name, null, color);
+            return await Context.Guild.CreateRoleAsync(name, GuildPermissions.None, color);
         }
     }
 }
