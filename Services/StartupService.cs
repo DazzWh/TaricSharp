@@ -13,12 +13,12 @@ namespace TaricSharp.Services
     public class StartupService
     {
         private readonly DiscordSocketClient _discord;
-        private readonly CommandService _commands;
+        private readonly CommandHandler _commands;
         private readonly IServiceProvider _service;
 
         public StartupService(
             DiscordSocketClient discord,
-            CommandService commands,
+            CommandHandler commands,
             IServiceProvider service)
         {
             _discord = discord;
@@ -31,7 +31,8 @@ namespace TaricSharp.Services
             await _discord.LoginAsync(TokenType.Bot, 
                 Environment.GetEnvironmentVariable("DiscordToken"));     
             await _discord.StartAsync();
-            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _service);
+
+            await _commands.Initialize();
         }
     }
 }
