@@ -17,7 +17,7 @@ namespace TaricSharp.Modules
     /// </summary>
     public class RoleModule : ModuleBase<SocketCommandContext>
     {
-        private readonly Color GameRoleColor = new Color(0x8787c5);
+        private readonly Color _gameRoleColor = new Color(0x8787c5);
 
         [Command("colour")]
         [Summary("Changes the colour of user to the colour hex")]
@@ -44,7 +44,7 @@ namespace TaricSharp.Modules
             }
 
             await role.Result.ModifyAsync(x =>
-                x.Position = Context.Guild.Roles.Count(r => r.Color == GameRoleColor) + 1);
+                x.Position = Context.Guild.Roles.Count(r => r.Color == _gameRoleColor) + 1);
 
             if (Context.User is IGuildUser user)
             {
@@ -76,9 +76,9 @@ namespace TaricSharp.Modules
             var colored =
                 Context.Guild.Roles.Where(
                     role =>
-                        role.Color != GameRoleColor &&
+                        role.Color != _gameRoleColor &&
                         role.Color != Color.Default &&
-                        role.Members.Contains(Context.User));
+                        role.Members.Contains(contextUser));
 
             foreach (var role in colored)
             {
