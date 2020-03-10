@@ -3,37 +3,38 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
+using TaricSharp.Services;
 
 namespace TaricSharp
 {
     internal class Program
     {
-        private DiscordSocketClient _client;
-        private CommandHandler _commandHandler;
+        public static Task Main(string[] args)
+            => new Program().RunAsync();
 
-        public static void Main(string[] args)
-            => new Program().MainAsync().GetAwaiter().GetResult();
-
-        public async Task MainAsync()
+        public async Task RunAsync()
         {
-            _client = new DiscordSocketClient();
-            _client.Log += Log;
-
-            _commandHandler = new CommandHandler(_client, new CommandService());
-            await _commandHandler.InstallCommandsAsync();
-
-            await _client.LoginAsync(TokenType.Bot,
-                Environment.GetEnvironmentVariable("DiscordToken"));
-            await _client.StartAsync();
-
-            // Block this task until the program is closed.
+            var provider = BuildServiceProvider();
+            await provider.GetRequiredService<StartupService>().StartAsync();
             await Task.Delay(-1);
         }
+        private static IServiceProvider BuildServiceProvider() => new ServiceCollection()
+            .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
+            {
+                LogLevel = LogSeverity.Verbose, // Tell the logger to give Verbose amount of info
+                MessageCacheSize = 1000 // Cache 1,000 messages per channel
+            }))
 
-        private Task Log(LogMessage msg)
-        {
-            Console.WriteLine(msg.ToString());
-            return Task.CompletedTask;
-        }
+            .AddSingleton(new CommandService(new CommandServiceConfig
+            {
+                LogLevel = LogSeverity.Verbose, // Tell the logger to give Verbose amount of info
+                DefaultRunMode = RunMode.Async, // Force all commands to run async by default
+            }))
+            .AddSingleton<LoggingService>()
+            .AddSingleton<CommandHandler>()
+            .AddSingleton<Random>()
+            .AddSingleton<StartupService>()
+            .BuildServiceProvider();
     }
 }
