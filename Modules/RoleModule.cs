@@ -31,7 +31,7 @@ namespace TaricSharp.Modules
                 return;
             }
             
-            if (ColorFromHexString(colorStr) == GameRoleColor)
+            if (ColorFromHexString(colorStr) == _gameRoleColor)
             {
                 await ReplyAsync($"Sorry, that colour is reserved for GameRoles {Context.User.Username}");
                 return;

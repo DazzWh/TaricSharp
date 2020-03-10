@@ -9,7 +9,6 @@ namespace TaricSharp.Modules
     /// <summary>
     /// Module that provides information about the bot
     /// </summary>
-    [DontAutoLoad]
     public class AboutModule : ModuleBase<SocketCommandContext>
     {
         private readonly CommandService _commandService;
@@ -19,7 +18,7 @@ namespace TaricSharp.Modules
             _commandService = commandService;
         }
 
-        [Command("Help")]
+        [Command("help")]
         [Summary("Lists the available commands")]
         public async Task Help()
         {
