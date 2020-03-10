@@ -16,7 +16,6 @@ namespace TaricSharp
         public async Task RunAsync()
         {
             var provider = BuildServiceProvider();
-            //provider.GetRequiredService<LoggingService>();    
             await provider.GetRequiredService<StartupService>().StartAsync();
             await Task.Delay(-1);
         }
@@ -32,11 +31,10 @@ namespace TaricSharp
                 LogLevel = LogSeverity.Verbose, // Tell the logger to give Verbose amount of info
                 DefaultRunMode = RunMode.Async, // Force all commands to run async by default
             }))
+            .AddSingleton<LoggingService>()
             .AddSingleton<CommandHandler>()
-            .AddSingleton<StartupService>()
             .AddSingleton<Random>()
-            //.AddSingleton<LoggingService>()
-            //.AddSingleton(Configuration);
+            .AddSingleton<StartupService>()
             .BuildServiceProvider();
     }
 }
