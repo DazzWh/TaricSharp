@@ -15,4 +15,13 @@
     <PackageReference Include="Discord.Net.Commands" Version="2.1.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Modules/RoleModule.Color.cs">
+      <DependentUpon>RoleModule.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Modules/RoleModule.Game.cs">
+      <DependentUpon>RoleModule.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
 </Project>
