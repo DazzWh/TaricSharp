@@ -21,7 +21,7 @@ namespace TaricSharp.Modules
                 await ReplyAsync($"Incorrect hex code {Context.User.Username}");
                 return;
             }
-            
+
             if (ColorFromHexString(colorStr) == _gameRoleColor)
             {
                 await ReplyAsync($"Sorry, that colour is reserved for GameRoles {Context.User.Username}");
@@ -40,10 +40,7 @@ namespace TaricSharp.Modules
             await role.Result.ModifyAsync(x =>
                 x.Position = Context.Guild.Roles.Count(r => r.Color == _gameRoleColor) + 1);
 
-            if (Context.User is IGuildUser user)
-            {
-                await user.AddRoleAsync(role.Result);
-            }
+            await AddRoleToUser(role);
         }
 
         private bool ValidHexString(string str)

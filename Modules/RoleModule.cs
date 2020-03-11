@@ -2,7 +2,6 @@
 using Discord;
 using Discord.Commands;
 using Discord.Rest;
-using TaricSharp.Services;
 
 namespace TaricSharp.Modules
 {
@@ -19,6 +18,26 @@ namespace TaricSharp.Modules
         private async Task<RestRole> CreateRole(string name, Color color)
         {
             return await Context.Guild.CreateRoleAsync(name, GuildPermissions.None, color);
+        }
+
+        private async Task AddRoleToUser(Task<RestRole> role)
+        {
+            if (Context.User is IGuildUser user)
+            {
+                await user.AddRoleAsync(role.Result);
+            }
+        }
+
+        private async Task CreateAndAddRoleToUser(string gameName, Color roleColor)
+        {
+            var role = CreateRole(gameName, roleColor);
+            if (role.Result == null)
+            {
+                // TODO: log errors here
+                return;
+            }
+
+            await AddRoleToUser(role);
         }
     }
 }
