@@ -12,15 +12,18 @@ namespace TaricSharp.Services
     {
         private readonly DiscordSocketClient _client;
         private readonly CommandHandler _commands;
+        private readonly PinService _pinService;
         private readonly LoggingService _logging;
 
         public StartupService(
             DiscordSocketClient discord,
             CommandHandler commands,
+            PinService pinService,
             LoggingService logging)
         {
             _client = discord;
             _commands = commands;
+            _pinService = pinService;
             _logging = logging;
         }
 
@@ -33,6 +36,7 @@ namespace TaricSharp.Services
             await _client.StartAsync();
 
             await _commands.Initialize();
+            _pinService.Initialize();
         }
     }
 }

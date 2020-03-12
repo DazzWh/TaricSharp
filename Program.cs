@@ -33,6 +33,7 @@ namespace TaricSharp
             }))
             .AddSingleton<LoggingService>()
             .AddSingleton<CommandHandler>()
+            .AddSingleton<PinService>()
             .AddSingleton<Random>()
             .AddSingleton<StartupService>()
             .BuildServiceProvider();
