@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using MoreLinq.Extensions;
 
 namespace TaricSharp.Modules
 {
@@ -19,21 +21,28 @@ namespace TaricSharp.Modules
         }
 
         [Command("help")]
+        [Alias("commands")]
         [Summary("Lists the available commands")]
         public async Task Help()
         {
-            var commands = _commandService.Commands;
-            var embedBuilder = new EmbedBuilder();
+            var commands = _commandService.Commands.DistinctBy(cmd => cmd.Name);
+            var embedBuilder = new EmbedBuilder
+            {
+                Title = "Command list",
+                Color = new Color(0xc55fc5)
+            };
 
             foreach (var command in commands)
             {
-                // Get the command Summary attribute information
-                var embedFieldText = command.Summary ?? "No description available\n";
+                var sb = new StringBuilder();
 
-                embedBuilder.AddField(command.Name, embedFieldText);
+                sb.AppendLine(command.Summary ?? "No description available");
+                sb.AppendLine(command.Remarks ?? string.Empty);
+
+                embedBuilder.AddField(command.Name, sb.ToString());
             }
 
-            await ReplyAsync("Here's a list of commands and their description: ", false, embedBuilder.Build());
+            await ReplyAsync(null, false, embedBuilder.Build());
         }
     }
 }

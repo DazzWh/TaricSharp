@@ -31,6 +31,7 @@ namespace TaricSharp.Modules
 
         [Command("roll")]
         [Summary("Rolls a dice between 1 and 100")]
+        [Remarks("Also accepts up to two numbers after as min or max values")]
         public Task RollAsync()
             => RollReply(_rnd.Next(101));
 

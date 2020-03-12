@@ -13,6 +13,7 @@ namespace TaricSharp.Modules
         [Command("color")]
         [Alias("colour")]
         [Summary("Changes the colour of user to the colour hex")]
+        [Remarks("Accepts the format like #c55fc5, google color picker and copy the HEX")]
         public async Task ColorAsync(
             [Summary("Hexadecimal colour")] string colorStr)
         {

@@ -10,6 +10,7 @@ namespace TaricSharp.Modules
     {
         [Command("game")]
         [Summary("Adds or removes a GameRole to user")]
+        [Remarks("Just type \"!game name of game\"")]
         public async Task GameAsync(
             [Summary("Game name")] [Remainder] string gameName)
         {
