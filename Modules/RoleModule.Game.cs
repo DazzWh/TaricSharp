@@ -21,7 +21,7 @@ namespace TaricSharp.Modules
             if (gameRole == null)
             {
                 await CreateAndAddRoleToUser(gameName, _gameRoleColor);
-                await ReplyAsync($"{gameName} created and added to {Context.User.Username}");
+                await ReplyAsync($"{gameName} role created and added to {Context.User.Username}");
                 return;
             }
 
@@ -31,13 +31,12 @@ namespace TaricSharp.Modules
                 {
                     await user.RemoveRoleAsync(gameRole);
                     await DeleteEmptyGameRoles();
-                    await ReplyAsync($"{gameName} removed from {Context.User.Username}");
-
+                    await ReplyAsync($"{gameName} role removed from {Context.User.Username}");
                 }
                 else
                 {
                     await user.AddRoleAsync(gameRole);
-                    await ReplyAsync($"{gameName} added to {Context.User.Username}");
+                    await ReplyAsync($"{gameName} role added to {Context.User.Username}");
                 }
             }
         }

@@ -7,7 +7,6 @@ using MoreLinq.Extensions;
 
 namespace TaricSharp.Modules
 {
-
     /// <summary>
     /// Module that provides information about the bot
     /// </summary>
