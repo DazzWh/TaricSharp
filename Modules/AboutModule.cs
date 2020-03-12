@@ -20,6 +20,26 @@ namespace TaricSharp.Modules
             _commandService = commandService;
         }
 
+        [Command("about")]
+        [Summary("Displays tech info")]
+        public async Task About()
+        {
+            var embedBuilder = new EmbedBuilder
+            {
+                Color = new Color(0x31bdc3),
+                ImageUrl = "https://cdn.discordapp.com/app-icons/186101048027512832/98d08bcd400ee36c1ab1d6a734fb92b9.png?size=256"
+            };
+
+            var os = Environment.OSVersion;
+            embedBuilder.AddField("My Home", 
+                $"Platform: {os.Platform} \n Version: {os.VersionString}");
+
+            embedBuilder.AddField("My Brain",
+                "Code publicly hosted on [Github](https://github.com/DazzWh/TaricSharp), pull requests welcome!");
+
+            await ReplyAsync(null, false, embedBuilder.Build());
+        }
+
         [Command("help")]
         [Alias("commands")]
         [Summary("Lists the available commands")]
