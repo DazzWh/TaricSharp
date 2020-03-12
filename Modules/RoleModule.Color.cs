@@ -19,7 +19,7 @@ namespace TaricSharp.Modules
         {
             if (!ValidHexString(colorStr))
             {
-                await ReplyAsync($"Incorrect hex code {Context.User.Username}");
+                await ReplyAsync($"Invalid hex code {Context.User.Username}");
                 return;
             }
 
@@ -44,13 +44,13 @@ namespace TaricSharp.Modules
             await AddRoleToUser(role);
         }
 
-        private bool ValidHexString(string str)
+        private static bool ValidHexString(string str)
         {
             var rx = new Regex(@"^#?[A-Fa-f0-9]{6}$");
             return rx.IsMatch(str);
         }
 
-        private Color ColorFromHexString(string str)
+        private static Color ColorFromHexString(string str)
         {
             if (str.StartsWith("#"))
                 str = str.Substring(1);

@@ -31,6 +31,7 @@ namespace TaricSharp.Services
         {
             if (!Directory.Exists(_logDirectory))
                 Directory.CreateDirectory(_logDirectory);
+
             if (!File.Exists(_logFile))
                 File.Create(_logFile).Dispose();
 

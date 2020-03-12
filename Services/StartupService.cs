@@ -27,6 +27,7 @@ namespace TaricSharp.Services
         public async Task StartAsync()
         {
             _logging.Initialize();
+
             await _client.LoginAsync(TokenType.Bot,
                 Environment.GetEnvironmentVariable("DiscordToken"));
             await _client.StartAsync();

@@ -27,12 +27,11 @@ namespace TaricSharp.Services
             _client.MessageReceived += HandleCommandAsync;
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
         }
-        
+
         private async Task HandleCommandAsync(SocketMessage messageParam)
         {
             // Don't process the command if it was a system message
-            var message = messageParam as SocketUserMessage;
-            if (message == null) return;
+            if (!(messageParam is SocketUserMessage message)) return;
 
             // Create a number to track where the prefix ends and the command begins
             var argPos = 0;
@@ -63,7 +62,5 @@ namespace TaricSharp.Services
             // if (!result.IsSuccess)
             // await context.Channel.SendMessageAsync(result.ErrorReason);
         }
-
-        
     }
 }
