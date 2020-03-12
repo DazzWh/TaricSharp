@@ -20,7 +20,7 @@ namespace TaricSharp.Modules
 
             if (gameRole == null)
             {
-                await CreateAndAddRoleToUser(gameName, _gameRoleColor);
+                await CreateAndAddRoleToUser(gameName, _gameRoleColor, true);
                 await ReplyAsync($"{gameName} role created and added to {Context.User.Username}");
                 return;
             }

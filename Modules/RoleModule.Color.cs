@@ -31,7 +31,7 @@ namespace TaricSharp.Modules
 
             await RemoveNonGameColoredRolesFromUser(Context.User);
 
-            var role = CreateRole(Context.User.Username, ColorFromHexString(colorStr));
+            var role = CreateAndAddRoleToUser(Context.User.Username, ColorFromHexString(colorStr));
             if (role.Result == null)
             {
                 // TODO: log errors here
@@ -40,8 +40,6 @@ namespace TaricSharp.Modules
 
             await role.Result.ModifyAsync(x =>
                 x.Position = Context.Guild.Roles.Count(r => r.Color == _gameRoleColor) + 1);
-
-            await AddRoleToUser(role);
         }
 
         private static bool ValidHexString(string str)
