@@ -29,14 +29,15 @@ namespace TaricSharp.Modules
             {
                 if (gameRole.Members.Contains(user))
                 {
+                    var roleName = gameRole.Name;
                     await user.RemoveRoleAsync(gameRole);
                     await DeleteEmptyGameRoles();
-                    await ReplyAsync($"{gameName} role removed from {Context.User.Username}");
+                    await ReplyAsync($"{roleName} role removed from {Context.User.Username}");
                 }
                 else
                 {
                     await user.AddRoleAsync(gameRole);
-                    await ReplyAsync($"{gameName} role added to {Context.User.Username}");
+                    await ReplyAsync($"{gameRole.Name} role added to {Context.User.Username}");
                 }
             }
         }
