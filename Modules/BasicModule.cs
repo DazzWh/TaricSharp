@@ -8,6 +8,7 @@ namespace TaricSharp.Modules
     /// <summary>
     /// Module of basic chat commands that can be used by all users
     /// </summary>
+    [RequireBotPermission(GuildPermission.SendMessages)]
     public class BasicModule : ModuleBase<SocketCommandContext>
     {
         private readonly Random _rnd;

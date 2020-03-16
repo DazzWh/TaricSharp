@@ -10,6 +10,7 @@ namespace TaricSharp.Modules
     /// <summary>
     /// Module that provides information about the bot
     /// </summary>
+    [RequireBotPermission(GuildPermission.SendMessages)]
     public class AboutModule : ModuleBase<SocketCommandContext>
     {
         private readonly CommandService _commandService;
@@ -28,7 +29,7 @@ namespace TaricSharp.Modules
                 Color = new Color(0x31bdc3),
                 ImageUrl = "https://cdn.discordapp.com/app-icons/186101048027512832/98d08bcd400ee36c1ab1d6a734fb92b9.png?size=256"
             };
-
+            
             var os = Environment.OSVersion;
             embedBuilder.AddField("My Home", 
                 $"Platform: {os.Platform} \n Version: {os.VersionString}");

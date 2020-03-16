@@ -11,6 +11,7 @@ namespace TaricSharp.Modules
     /// The server is setup so that users have one role to set their name colour.
     /// All other roles are "game roles", that are one reserved colour and can be mentioned.
     /// </summary>
+    [RequireBotPermission(GuildPermission.SendMessages | GuildPermission.ManageRoles)]
     public partial class RoleModule : ModuleBase<SocketCommandContext>
     {
         private readonly Color _gameRoleColor = new Color(0x8787c5);
