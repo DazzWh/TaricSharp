@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
@@ -45,7 +46,10 @@ namespace TaricSharp.Modules
         [Summary("Lists the available commands")]
         public async Task Help()
         {
-            var commands = _commandService.Commands.DistinctBy(cmd => cmd.Name);
+            var commands = _commandService.Commands
+                .Where(cmd => !cmd.Module.Preconditions.Contains(new RequireOwnerAttribute()))
+                .DistinctBy(cmd => cmd.Name);
+
             var embedBuilder = new EmbedBuilder
             {
                 Title = "Command list",
