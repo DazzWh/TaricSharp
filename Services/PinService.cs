@@ -20,10 +20,10 @@ namespace TaricSharp.Services
 
         public void Initialize()
         {
-            _client.ReactionAdded += HandleReactionAsync;
+            _client.ReactionAdded += HandlePinReactionAsync;
         }
 
-        private static async Task HandleReactionAsync(
+        private static async Task HandlePinReactionAsync(
             Cacheable<IUserMessage, ulong> message,
             ISocketMessageChannel channel,
             SocketReaction reaction)
