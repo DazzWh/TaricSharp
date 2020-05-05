@@ -32,6 +32,7 @@ namespace TaricSharp
                 DefaultRunMode = RunMode.Async
             }))
             .AddSingleton<LoggingService>()
+            .AddSingleton<ReadyCheckService>()
             .AddSingleton<CommandHandler>()
             .AddSingleton<PinService>()
             .AddSingleton<Random>()

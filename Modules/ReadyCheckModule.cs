@@ -24,7 +24,7 @@ namespace TaricSharp.Modules
         public async Task InitiateReadyCheck()
         {
             // For now just send context, break it down later
-            _readyCheckService.CreateReadyCheck(Context);
+            await _readyCheckService.CreateReadyCheck(Context);
         }
     }
 }
