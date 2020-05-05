@@ -49,31 +49,27 @@ namespace TaricSharp.Services
             ISocketMessageChannel channel,
             SocketReaction reaction)
         {
-            //TODO: This doesn't work, and is a mess.
-            var msg = await channel.GetMessageAsync(message.Id);
-            var readyCheck = _readyChecks.First(m => m.ReadyMsg.Equals(msg));
-
-            if (!IsReadyCheckEmote(reaction) || readyCheck == null || !reaction.User.IsSpecified)
+            if (!reaction.User.IsSpecified || reaction.User.Value.IsBot)
                 return;
 
-            var user = reaction.User.Value;
+            //TODO: Check potential rate limiting issues
+            var msg = await channel.GetMessageAsync(message.Id);
+            var readyCheck = _readyChecks.FirstOrDefault(m => m.ReadyMsg.Id == msg.Id);
+
+            if (readyCheck == null || !reaction.User.IsSpecified)
+                return;
 
             if (Equals(reaction.Emote, _readyEmoji))
-                await readyCheck.AddReadyUser(user);
+                await readyCheck.AddReadyUser(reaction.User.Value);
 
             if (Equals(reaction.Emote, _cancelEmoji))
-                await readyCheck.RemoveReadyUser(user);
+                await readyCheck.RemoveReadyUser(reaction.User.Value);
 
-            //await msg.RemoveReactionAsync(reaction.Emote, user);
+            if (Equals(reaction.Emote, _notifyEmoji))
+                await readyCheck.ToggleNotifyOnUser(reaction.User.Value);
 
-        }
+            await readyCheck.ReadyMsg.RemoveReactionAsync(reaction.Emote, reaction.User.Value);
 
-        private bool IsReadyCheckEmote(IReaction reaction)
-        {
-            var emote = reaction.Emote;
-            return Equals(emote, _readyEmoji) ||
-                   Equals(emote, _cancelEmoji) ||
-                   Equals(emote, _notifyEmoji);
         }
     }
 }

@@ -50,5 +50,10 @@ namespace TaricSharp.Services
 
             await ReadyMsg.ModifyAsync(m => m.Content = text);
         }
+
+        public async Task ToggleNotifyOnUser(IUser user)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
