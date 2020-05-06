@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using TaricSharp.Services;
+using Game = TaricSharp.Services.Game;
 
 namespace TaricSharp.Modules
 {
@@ -23,8 +26,29 @@ namespace TaricSharp.Modules
         [Summary("Initiates a ready check")]
         public async Task InitiateReadyCheck()
         {
-            // For now just send context, break it down later
-            await _readyCheckService.CreateReadyCheck(Context);
+            await _readyCheckService.CreateReadyCheck(Context, Game.None);
+        }
+
+        [Command("ready")]
+        [Alias("check")]
+        [Summary("Initiates a ready check")]
+        public async Task InitiateReadyCheck([Remainder] string text)
+        {
+            await _readyCheckService.CreateReadyCheck(Context, GameFromMentions(Context.Message.MentionedRoles));
+        }
+
+        private static Game GameFromMentions(IEnumerable<SocketRole> messageMentionedRoles)
+        {
+            foreach (var role in messageMentionedRoles)
+            {
+                if (role.Name.Equals("Dota"))
+                    return Game.Dota;
+
+                if (role.Name.Equals("Winter"))
+                    return Game.ProjectWinter;
+            }
+
+            return Game.None;
         }
     }
 }

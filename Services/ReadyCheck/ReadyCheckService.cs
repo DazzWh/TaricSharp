@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using Discord.Rest;
 using Discord.WebSocket;
 
 namespace TaricSharp.Services
@@ -28,7 +27,7 @@ namespace TaricSharp.Services
             _client.ReactionAdded += HandleReadyCheckReactionAsync;
         }
 
-        public async Task CreateReadyCheck(SocketCommandContext context)
+        public async Task CreateReadyCheck(SocketCommandContext context, Game game)
         {
             // Create an embed message to be the ready check
             var msg = await context.Channel.SendMessageAsync("Creating ready check...");
@@ -39,7 +38,7 @@ namespace TaricSharp.Services
             await msg.AddReactionAsync(_cancelEmoji);
 
             // Add that message to the list of ReadyChecks
-            var readyCheck = new ReadyCheck(msg, 2);
+            var readyCheck = new ReadyCheck(msg, 2, game);
             _readyChecks.Add(readyCheck);
             await readyCheck.AddReadyUser(context.User);
         }

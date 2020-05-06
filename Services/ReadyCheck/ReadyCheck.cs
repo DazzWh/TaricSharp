@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Rest;
@@ -13,13 +14,16 @@ namespace TaricSharp.Services
         public readonly RestUserMessage ReadyMsg;
         private readonly int _readyCount;
         private readonly HashSet<IUser> _readyUsers;
+        private readonly Game _game;
 
         public ReadyCheck(
             RestUserMessage readyMsg,
-            int readyCount)
+            int readyCount,
+            Game game)
         {
             ReadyMsg = readyMsg;
             _readyCount = readyCount;
+            _game = game;
             _readyUsers = new HashSet<IUser>();
         }
 
@@ -43,18 +47,43 @@ namespace TaricSharp.Services
 
         private async Task UpdateMessage()
         {
-            var readyUsers = _readyUsers.Count > 0 ? string.Join("/n", _readyUsers) : " ";
+            var readyUsers = _readyUsers.Count > 0 ? 
+                _readyUsers.Aggregate("", (current, user) => current + Environment.NewLine + user.Username) : "--None--";
 
             var embed = new EmbedBuilder()
                 .WithTitle("Ready Check!")
-                .WithColor(Color.Blue)
-                .AddField("Ready Users:", readyUsers);
+                .AddField("Ready Users:", readyUsers, true)
+                .WithFooter("Use the reactions to ready up, email will send a pm when people are ready");
+
+            AddGameSpecificEmbedOptions(embed);
 
             await ReadyMsg.ModifyAsync(m =>
             {
                 m.Content = "";
                 m.Embed = embed.Build();
             });
+        }
+
+        private void AddGameSpecificEmbedOptions(EmbedBuilder embed)
+        {
+            switch (_game)
+            {
+                case Game.ProjectWinter:
+                    embed.WithColor(Color.Blue)
+                         .WithImageUrl("https://steamcdn-a.akamaihd.net/steam/apps/774861/header.jpg");
+                    break;
+
+                case Game.Dota:
+                    embed.WithColor(Color.DarkRed)
+                        .WithImageUrl("https://steamcdn-a.akamaihd.net/steam/apps/570/header.jpg");
+                    break;
+
+                case Game.None:
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         public async Task ToggleNotifyOnUser(IUser user)
