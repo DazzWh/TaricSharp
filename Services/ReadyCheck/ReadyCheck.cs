@@ -13,9 +13,10 @@ namespace TaricSharp.Services.ReadyCheck
     {
         public readonly RestUserMessage ReadyMsg;
         public readonly IUser Creator;
+        private readonly Game _game;
+
         private readonly HashSet<IUser> _readyUsers;
         private readonly HashSet<IUser> _notifyUsers;
-        private readonly Game _game;
 
         public ReadyCheck(
             RestUserMessage readyMsg,
@@ -30,20 +31,23 @@ namespace TaricSharp.Services.ReadyCheck
             _notifyUsers = new HashSet<IUser>();
         }
 
-        public async Task AddReadyUser(IUser user)
+        public async Task AddReadyUser(
+            IUser user)
         {
             _readyUsers.Add(user);
             await UpdateMessage();
         }
 
-        public async Task RemoveReadyUser(IUser user)
+        public async Task RemoveReadyUser(
+            IUser user)
         {
             _readyUsers.Remove(user);
             _notifyUsers.Remove(user);
             await UpdateMessage();
         }
 
-        public async Task ToggleNotifyOnUser(IUser user)
+        public async Task ToggleNotifyOnUser(
+            IUser user)
         {
             if (_notifyUsers.Contains(user))
             {
@@ -61,8 +65,8 @@ namespace TaricSharp.Services.ReadyCheck
         public async Task Finish()
         {
             await UpdateFinishedMessage();
-            
-            _notifyUsers.ForEach(u => 
+
+            _notifyUsers.ForEach(u =>
                 u.SendMessageAsync($"Ready check finished! {ReadyMsg.GetJumpUrl()}"));
 
             await ReadyMsg.RemoveAllReactionsAsync();
@@ -70,7 +74,7 @@ namespace TaricSharp.Services.ReadyCheck
 
         private async Task UpdateMessage()
         {
-            var embed = GenerateMessageEmbed();
+            var embed = BaseEmbedBuilder();
 
             await ReadyMsg.ModifyAsync(m =>
             {
@@ -81,12 +85,12 @@ namespace TaricSharp.Services.ReadyCheck
 
         private async Task UpdateFinishedMessage()
         {
-            var embed = GenerateMessageEmbed();
+            var embed = BaseEmbedBuilder();
 
             // Finished specific overrides
             embed.WithTitle("")
-                 .WithColor(Color.Green)
-                 .WithFooter("Game on!");
+                .WithColor(Color.Green)
+                .WithFooter("Game on!");
 
             await ReadyMsg.ModifyAsync(m =>
             {
@@ -95,13 +99,14 @@ namespace TaricSharp.Services.ReadyCheck
             });
         }
 
-        private EmbedBuilder GenerateMessageEmbed()
+        private EmbedBuilder BaseEmbedBuilder()
         {
             var embed = new EmbedBuilder()
                 .WithTitle($"{Creator.Username} called a ready check")
                 .AddField("Ready Users:", ReadyUsersToString(), true)
-                .WithFooter("Use the reactions to ready up, email will send a pm when people are ready.\n" + 
-                            "Creator can hit the No Vacancy button to conclude the check.");
+                .WithFooter("Use the reactions to ready up, email will send a pm when people are ready." +
+                            Environment.NewLine +
+                            "Creator can hit the red \"No Vacancy\" button to conclude the check.");
 
             AddGameSpecificEmbedOptions(embed);
 
@@ -110,26 +115,30 @@ namespace TaricSharp.Services.ReadyCheck
 
         private string ReadyUsersToString()
         {
-            return  _readyUsers.Count > 0 ? 
-                _readyUsers.Aggregate("", 
-                    (current, user) => current + Environment.NewLine 
-                                               + user.Username + " " + NotifyIconIfInNotifyList(user)) : "--None--";
+            return _readyUsers.Count > 0
+                ? _readyUsers.Aggregate("",
+                    (current, user) =>
+                        current + Environment.NewLine +
+                        user.Username + " " + NotifyIconIfInNotifyList(user))
+                : "--None--";
         }
 
-        private string NotifyIconIfInNotifyList(IUser user)
+        private string NotifyIconIfInNotifyList(
+            IUser user)
         {
             return _notifyUsers.Contains(user) ? "✉️" : "";
         }
 
-        private void AddGameSpecificEmbedOptions(EmbedBuilder embed)
+        private void AddGameSpecificEmbedOptions(
+            EmbedBuilder embed)
         {
             switch (_game)
             {
                 case Game.ProjectWinter:
                     embed.WithTitle($"{embed.Title} for Project Winter!")
-                         .AddField("Launch game", "steam://run/774861", true)
-                         .WithColor(Color.Blue)
-                         .WithImageUrl("https://steamcdn-a.akamaihd.net/steam/apps/774861/header.jpg");
+                        .AddField("Launch game", "steam://run/774861", true)
+                        .WithColor(Color.Blue)
+                        .WithImageUrl("https://steamcdn-a.akamaihd.net/steam/apps/774861/header.jpg");
                     break;
 
                 case Game.Dota:

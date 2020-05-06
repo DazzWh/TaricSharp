@@ -17,7 +17,8 @@ namespace TaricSharp.Services.ReadyCheck
         private readonly Emoji _cancelEmoji = new Emoji("❌");
         private readonly Emoji _finishEmoji = new Emoji("🈵"); // "No Vacancy" in Japanese
 
-        public ReadyCheckService(DiscordSocketClient client)
+        public ReadyCheckService(
+            DiscordSocketClient client)
         {
             _client = client;
             _readyChecks = new HashSet<ReadyCheck>();
@@ -28,7 +29,8 @@ namespace TaricSharp.Services.ReadyCheck
             _client.ReactionAdded += HandleReadyCheckReactionAsync;
         }
 
-        public async Task CreateReadyCheck(SocketCommandContext context, Game game)
+        public async Task CreateReadyCheck(
+            SocketCommandContext context, Game game)
         {
             var msg = await context.Channel.SendMessageAsync("Creating ready check...");
 
@@ -50,7 +52,6 @@ namespace TaricSharp.Services.ReadyCheck
             if (!reaction.User.IsSpecified || reaction.User.Value.IsBot)
                 return;
 
-            //TODO: Check potential rate limiting issues
             var msg = await channel.GetMessageAsync(message.Id);
             var readyCheck = _readyChecks.FirstOrDefault(m => m.ReadyMsg.Id == msg.Id);
 

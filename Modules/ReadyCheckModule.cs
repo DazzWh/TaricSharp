@@ -14,7 +14,8 @@ namespace TaricSharp.Modules
     {
         private readonly ReadyCheckService _readyCheckService;
 
-        public ReadyCheckModule(ReadyCheckService readyCheckService)
+        public ReadyCheckModule(
+            ReadyCheckService readyCheckService)
         {
             _readyCheckService = readyCheckService;
         }
@@ -30,13 +31,14 @@ namespace TaricSharp.Modules
 
         [Command("ready")]
         [Alias("check")]
-        [Summary("Initiates a ready check, nad checks for GameRole mentions")]
-        public async Task InitiateReadyCheck([Remainder] string text)
+        public async Task InitiateReadyCheck(
+            [Remainder] string text)
         {
             await _readyCheckService.CreateReadyCheck(Context, GameFromMentions(Context.Message.MentionedRoles));
         }
 
-        private static Game GameFromMentions(IEnumerable<SocketRole> messageMentionedRoles)
+        private static Game GameFromMentions(
+            IEnumerable<SocketRole> messageMentionedRoles)
         {
             foreach (var role in messageMentionedRoles)
             {
