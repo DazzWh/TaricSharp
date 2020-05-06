@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Rest;
+using Color = Discord.Color;
 
 namespace TaricSharp.Services
 {
@@ -42,13 +43,18 @@ namespace TaricSharp.Services
 
         private async Task UpdateMessage()
         {
-            var text = "Ready users: ";
-            foreach (var user in _readyUsers)
-            {
-                text += user.Username;
-            }
+            var readyUsers = _readyUsers.Count > 0 ? string.Join("/n", _readyUsers) : " ";
 
-            await ReadyMsg.ModifyAsync(m => m.Content = text);
+            var embed = new EmbedBuilder()
+                .WithTitle("Ready Check!")
+                .WithColor(Color.Blue)
+                .AddField("Ready Users:", readyUsers);
+
+            await ReadyMsg.ModifyAsync(m =>
+            {
+                m.Content = "";
+                m.Embed = embed.Build();
+            });
         }
 
         public async Task ToggleNotifyOnUser(IUser user)

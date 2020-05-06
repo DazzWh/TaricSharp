@@ -11,7 +11,7 @@ namespace TaricSharp.Services
     public class ReadyCheckService
     {
         private readonly DiscordSocketClient _client;
-        private HashSet<ReadyCheck> _readyChecks;
+        private readonly HashSet<ReadyCheck> _readyChecks;
 
         private readonly Emoji _readyEmoji = new Emoji("✔️");
         private readonly Emoji _notifyEmoji =  new Emoji("✉️");
@@ -59,13 +59,13 @@ namespace TaricSharp.Services
             if (readyCheck == null || !reaction.User.IsSpecified)
                 return;
 
-            if (Equals(reaction.Emote, _readyEmoji))
+            if (reaction.Emote.Equals(_readyEmoji))
                 await readyCheck.AddReadyUser(reaction.User.Value);
 
-            if (Equals(reaction.Emote, _cancelEmoji))
+            if (reaction.Emote.Equals(_cancelEmoji))
                 await readyCheck.RemoveReadyUser(reaction.User.Value);
 
-            if (Equals(reaction.Emote, _notifyEmoji))
+            if (reaction.Emote.Equals(_notifyEmoji))
                 await readyCheck.ToggleNotifyOnUser(reaction.User.Value);
 
             await readyCheck.ReadyMsg.RemoveReactionAsync(reaction.Emote, reaction.User.Value);
