@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Rest;
+using MoreLinq.Extensions;
 using Color = Discord.Color;
 
 namespace TaricSharp.Services.ReadyCheck
@@ -13,6 +14,7 @@ namespace TaricSharp.Services.ReadyCheck
         public readonly RestUserMessage ReadyMsg;
         public readonly IUser Creator;
         private readonly HashSet<IUser> _readyUsers;
+        private readonly HashSet<IUser> _notifyUsers;
         private readonly Game _game;
 
         public ReadyCheck(
@@ -23,37 +25,45 @@ namespace TaricSharp.Services.ReadyCheck
             ReadyMsg = readyMsg;
             Creator = creator;
             _game = game;
+
             _readyUsers = new HashSet<IUser>();
+            _notifyUsers = new HashSet<IUser>();
         }
 
         public async Task AddReadyUser(IUser user)
         {
-            if (_readyUsers.Contains(user))
-                return;
-            
             _readyUsers.Add(user);
             await UpdateMessage();
         }
 
         public async Task RemoveReadyUser(IUser user)
         {
-            if (!_readyUsers.Contains(user))
-                return;
-
             _readyUsers.Remove(user);
+            _notifyUsers.Remove(user);
             await UpdateMessage();
         }
 
         public async Task ToggleNotifyOnUser(IUser user)
         {
-            throw new NotImplementedException();
+            if (_notifyUsers.Contains(user))
+            {
+                _notifyUsers.Remove(user);
+            }
+            else
+            {
+                _readyUsers.Add(user);
+                _notifyUsers.Add(user);
+            }
+
+            await UpdateMessage();
         }
 
         public async Task Finish()
         {
             await UpdateFinishedMessage();
             
-            //TODO: Ping all users set to notify when implemented
+            _notifyUsers.ForEach(u => 
+                u.SendMessageAsync($"Ready check finished! {ReadyMsg.GetJumpUrl()}"));
 
             await ReadyMsg.RemoveAllReactionsAsync();
         }
@@ -102,7 +112,13 @@ namespace TaricSharp.Services.ReadyCheck
         {
             return  _readyUsers.Count > 0 ? 
                 _readyUsers.Aggregate("", 
-                    (current, user) => current + Environment.NewLine + user.Username) : "--None--";
+                    (current, user) => current + Environment.NewLine 
+                                               + user.Username + " " + NotifyIconIfInNotifyList(user)) : "--None--";
+        }
+
+        private string NotifyIconIfInNotifyList(IUser user)
+        {
+            return _notifyUsers.Contains(user) ? "✉️" : "";
         }
 
         private void AddGameSpecificEmbedOptions(EmbedBuilder embed)
@@ -111,12 +127,14 @@ namespace TaricSharp.Services.ReadyCheck
             {
                 case Game.ProjectWinter:
                     embed.WithTitle($"{embed.Title} for Project Winter!")
+                         .AddField("Launch game", "steam://run/774861", true)
                          .WithColor(Color.Blue)
                          .WithImageUrl("https://steamcdn-a.akamaihd.net/steam/apps/774861/header.jpg");
                     break;
 
                 case Game.Dota:
                     embed.WithTitle($"{embed.Title} for Dota!")
+                        .AddField("Launch game", "steam://run/570", true)
                         .WithColor(Color.DarkRed)
                         .WithImageUrl("https://steamcdn-a.akamaihd.net/steam/apps/570/header.jpg");
                     break;

@@ -22,6 +22,7 @@ namespace TaricSharp.Modules
         [Command("ready")]
         [Alias("check")]
         [Summary("Initiates a ready check")]
+        [Remarks("Searches message for GameRole mentions to set the ReadyCheck theme")]
         public async Task InitiateReadyCheck()
         {
             await _readyCheckService.CreateReadyCheck(Context, Game.None);
@@ -29,7 +30,7 @@ namespace TaricSharp.Modules
 
         [Command("ready")]
         [Alias("check")]
-        [Summary("Initiates a ready check")]
+        [Summary("Initiates a ready check, nad checks for GameRole mentions")]
         public async Task InitiateReadyCheck([Remainder] string text)
         {
             await _readyCheckService.CreateReadyCheck(Context, GameFromMentions(Context.Message.MentionedRoles));
