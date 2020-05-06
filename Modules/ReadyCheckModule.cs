@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using TaricSharp.Services;
+using TaricSharp.Services.ReadyCheck;
 using Game = TaricSharp.Services.Game;
 
 namespace TaricSharp.Modules

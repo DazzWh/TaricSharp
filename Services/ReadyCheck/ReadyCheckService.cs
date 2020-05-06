@@ -5,7 +5,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 
-namespace TaricSharp.Services
+namespace TaricSharp.Services.ReadyCheck
 {
     public class ReadyCheckService
     {
@@ -13,8 +13,9 @@ namespace TaricSharp.Services
         private readonly HashSet<ReadyCheck> _readyChecks;
 
         private readonly Emoji _readyEmoji = new Emoji("✔️");
-        private readonly Emoji _notifyEmoji =  new Emoji("✉️");
-        private readonly Emoji _cancelEmoji =  new Emoji("❌");
+        private readonly Emoji _notifyEmoji = new Emoji("✉️");
+        private readonly Emoji _cancelEmoji = new Emoji("❌");
+        private readonly Emoji _finishEmoji = new Emoji("🈵"); // "No Vacancy" in Japanese
 
         public ReadyCheckService(DiscordSocketClient client)
         {
@@ -29,16 +30,14 @@ namespace TaricSharp.Services
 
         public async Task CreateReadyCheck(SocketCommandContext context, Game game)
         {
-            // Create an embed message to be the ready check
             var msg = await context.Channel.SendMessageAsync("Creating ready check...");
 
-            // Add reactions to that message to act as buttons
             await msg.AddReactionAsync(_readyEmoji);
             await msg.AddReactionAsync(_notifyEmoji);
             await msg.AddReactionAsync(_cancelEmoji);
+            await msg.AddReactionAsync(_finishEmoji);
 
-            // Add that message to the list of ReadyChecks
-            var readyCheck = new ReadyCheck(msg, 2, game);
+            var readyCheck = new ReadyCheck(msg, context.User, game);
             _readyChecks.Add(readyCheck);
             await readyCheck.AddReadyUser(context.User);
         }
@@ -67,8 +66,14 @@ namespace TaricSharp.Services
             if (reaction.Emote.Equals(_notifyEmoji))
                 await readyCheck.ToggleNotifyOnUser(reaction.User.Value);
 
-            await readyCheck.ReadyMsg.RemoveReactionAsync(reaction.Emote, reaction.User.Value);
+            if (reaction.Emote.Equals(_finishEmoji) && reaction.User.Value.Equals(readyCheck.Creator))
+            {
+                await readyCheck.Finish();
+                _readyChecks.Remove(readyCheck);
+                return; // Finish removes all reactions so no need to "fall through"
+            }
 
+            await readyCheck.ReadyMsg.RemoveReactionAsync(reaction.Emote, reaction.User.Value);
         }
     }
 }
