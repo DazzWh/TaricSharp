@@ -102,8 +102,9 @@ namespace TaricSharp.Services.ReadyCheck
         private EmbedBuilder BaseEmbedBuilder()
         {
             var embed = new EmbedBuilder()
-                .WithTitle($"{Creator.Username} called a ready check")
-                .AddField("Ready Users:", ReadyUsersToString(), true)
+                .WithAuthor(Creator.Username, Creator.GetAvatarUrl())
+                .WithTitle($"Ready check")
+                .AddField("Players:", "```" + ReadyUsersToString() + "```", true)
                 .WithFooter("Use the reactions to ready up, email will send a pm when people are ready." +
                             Environment.NewLine +
                             "Creator can hit the red \"No Vacancy\" button to conclude the check.");
@@ -136,16 +137,16 @@ namespace TaricSharp.Services.ReadyCheck
             {
                 case Game.ProjectWinter:
                     embed.WithTitle($"{embed.Title} for Project Winter!")
-                        .AddField("Launch game", "steam://run/774861", true)
+                        //.WithUrl("steam://run/774861")
                         .WithColor(Color.Blue)
-                        .WithImageUrl("https://steamcdn-a.akamaihd.net/steam/apps/774861/header.jpg");
+                        .WithThumbnailUrl("https://steamcdn-a.akamaihd.net/steam/apps/774861/header.jpg");
                     break;
 
                 case Game.Dota:
                     embed.WithTitle($"{embed.Title} for Dota!")
-                        .AddField("Launch game", "steam://run/570", true)
+                        //.WithUrl("steam://run/570")
                         .WithColor(Color.DarkRed)
-                        .WithImageUrl("https://steamcdn-a.akamaihd.net/steam/apps/570/header.jpg");
+                        .WithThumbnailUrl("https://steamcdn-a.akamaihd.net/steam/apps/570/header.jpg");
                     break;
 
                 case Game.None:
