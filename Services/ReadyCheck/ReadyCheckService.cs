@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using MoreLinq;
 
 namespace TaricSharp.Services.ReadyCheck
 {
@@ -11,6 +14,7 @@ namespace TaricSharp.Services.ReadyCheck
     {
         private readonly DiscordSocketClient _client;
         private readonly HashSet<ReadyCheck> _readyChecks;
+        private const int ReadyCheckTimeLimitHours = 24; // How many hours a ready check lasts before being deleted
 
         private readonly Emoji _readyEmoji = new Emoji("✔️");
         private readonly Emoji _notifyEmoji = new Emoji("✉️");
@@ -42,6 +46,16 @@ namespace TaricSharp.Services.ReadyCheck
             var readyCheck = new ReadyCheck(msg, context.User, game);
             _readyChecks.Add(readyCheck);
             await readyCheck.AddReadyUser(context.User);
+
+            RemoveOldReadyChecks();
+        }
+
+        private void RemoveOldReadyChecks()
+        {
+            _readyChecks.Where(rc => 
+                    (DateTimeOffset.Now - rc.ReadyMsg.Timestamp).TotalHours > ReadyCheckTimeLimitHours)
+                .ToList()
+                .ForEach(rc => _readyChecks.Remove(rc));
         }
 
         private async Task HandleReadyCheckReactionAsync(
