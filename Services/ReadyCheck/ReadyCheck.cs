@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Rest;
-using MoreLinq.Extensions;
 using Color = Discord.Color;
 
 namespace TaricSharp.Services.ReadyCheck
@@ -15,8 +14,8 @@ namespace TaricSharp.Services.ReadyCheck
         public readonly IUser Creator;
         private readonly Game _game;
 
-        private readonly HashSet<IUser> _readyUsers;
-        private readonly HashSet<IUser> _notifyUsers;
+        private readonly Dictionary<ulong, string> _readyUsers;
+        private readonly Dictionary<ulong, string> _notifyUsers;
 
         public ReadyCheck(
             RestUserMessage readyMsg,
@@ -27,36 +26,36 @@ namespace TaricSharp.Services.ReadyCheck
             Creator = creator;
             _game = game;
 
-            _readyUsers = new HashSet<IUser>();
-            _notifyUsers = new HashSet<IUser>();
+            _readyUsers = new Dictionary<ulong, string>();
+            _notifyUsers = new Dictionary<ulong, string>();
         }
 
         public async Task AddReadyUser(
             IUser user)
         {
-            _readyUsers.Add(user);
+            _readyUsers.Add(user.Id, user.Username);
             await UpdateMessage();
         }
 
         public async Task RemoveReadyUser(
             IUser user)
         {
-            _readyUsers.Remove(user);
-            _notifyUsers.Remove(user);
+            _readyUsers.Remove(user.Id);
+            _notifyUsers.Remove(user.Id);
             await UpdateMessage();
         }
 
         public async Task ToggleNotifyOnUser(
             IUser user)
         {
-            if (_notifyUsers.Contains(user))
+            if (_notifyUsers.ContainsKey(user.Id))
             {
-                _notifyUsers.Remove(user);
+                _notifyUsers.Remove(user.Id);
             }
             else
             {
-                _readyUsers.Add(user);
-                _notifyUsers.Add(user);
+                _readyUsers.Add(user.Id, user.Username);
+                _notifyUsers.Add(user.Id, user.Username);
             }
 
             await UpdateMessage();
@@ -66,8 +65,11 @@ namespace TaricSharp.Services.ReadyCheck
         {
             await UpdateFinishedMessage();
 
-            _notifyUsers.ForEach(u =>
-                u.SendMessageAsync($"Ready check finished! {ReadyMsg.GetJumpUrl()}"));
+            foreach (var userIdName in _notifyUsers)
+            {
+                var user = await ReadyMsg.Channel.GetUserAsync(userIdName.Key);
+                await user.SendMessageAsync($"Ready check finished! {ReadyMsg.GetJumpUrl()}");
+            }
 
             await ReadyMsg.RemoveAllReactionsAsync();
         }
@@ -120,14 +122,14 @@ namespace TaricSharp.Services.ReadyCheck
                 ? _readyUsers.Aggregate("",
                     (current, user) =>
                         current + Environment.NewLine +
-                        user.Username + " " + NotifyIconIfInNotifyList(user))
+                        user.Value + " " + NotifyIconIfInNotifyList(user.Key))
                 : "--None--";
         }
 
         private string NotifyIconIfInNotifyList(
-            IUser user)
+            ulong userId)
         {
-            return _notifyUsers.Contains(user) ? "✉️" : "";
+            return _notifyUsers.ContainsKey(userId) ? "✉️" : "";
         }
 
         private void AddGameSpecificEmbedOptions(
