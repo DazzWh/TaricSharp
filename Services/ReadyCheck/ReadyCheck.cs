@@ -33,7 +33,7 @@ namespace TaricSharp.Services.ReadyCheck
         public async Task AddReadyUser(
             IUser user)
         {
-            _readyUsers.Add(user.Id, user.Username);
+            _readyUsers.TryAdd(user.Id, user.Username);
             await UpdateMessage();
         }
 
@@ -54,8 +54,8 @@ namespace TaricSharp.Services.ReadyCheck
             }
             else
             {
-                _readyUsers.Add(user.Id, user.Username);
-                _notifyUsers.Add(user.Id, user.Username);
+                _readyUsers.TryAdd(user.Id, user.Username);
+                _notifyUsers.TryAdd(user.Id, user.Username);
             }
 
             await UpdateMessage();
