@@ -81,7 +81,7 @@ namespace TaricSharp.Services.ReadyCheck
             if (reaction.Emote.Equals(_notifyEmoji))
                 await readyCheck.ToggleNotifyOnUser(reaction.User.Value);
 
-            if (reaction.Emote.Equals(_finishEmoji) && reaction.User.Value.Equals(readyCheck.Creator))
+            if (reaction.Emote.Equals(_finishEmoji) && reaction.User.Value.Id.Equals(readyCheck.Creator.Id))
             {
                 await readyCheck.Finish();
                 _readyChecks.Remove(readyCheck);
