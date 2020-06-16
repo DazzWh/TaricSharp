@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
 using TaricSharp.Services.ReadyCheck;
-using Game = TaricSharp.Services.Game;
+using Game = TaricSharp.Services.ReadyCheck.Game;
 
 namespace TaricSharp.Modules
 {
