@@ -8,7 +8,7 @@ using Color = Discord.Color;
 
 namespace TaricSharp.Services.ReadyCheck
 {
-    public class ReadyCheck
+    public class ReadyCheckMessage
     {
         public readonly RestUserMessage ReadyMsg;
         public readonly IUser Creator;
@@ -17,7 +17,7 @@ namespace TaricSharp.Services.ReadyCheck
         private readonly Dictionary<ulong, string> _readyUsers;
         private readonly Dictionary<ulong, string> _notifyUsers;
 
-        public ReadyCheck(
+        public ReadyCheckMessage(
             RestUserMessage readyMsg,
             IUser creator,
             Game game)
