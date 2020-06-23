@@ -6,7 +6,7 @@ using Discord;
 using Discord.Rest;
 using Color = Discord.Color;
 
-namespace TaricSharp.Services.ReadyCheck
+namespace TaricSharp.Messages
 {
     public class ReadyCheckMessage
     {

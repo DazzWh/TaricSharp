@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using TaricSharp.Messages;
 
-namespace TaricSharp.Services.ReadyCheck
+namespace TaricSharp.Services
 {
     public class ReadyCheckService
     {

@@ -1,4 +1,4 @@
-﻿namespace TaricSharp.Services.ReadyCheck
+﻿namespace TaricSharp
 {
     /// <summary>
     /// An enum of common games played

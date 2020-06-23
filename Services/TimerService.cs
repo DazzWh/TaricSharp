@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Discord.Commands;
+using TaricSharp.Messages;
 
 namespace TaricSharp.Services
 {
@@ -43,10 +44,8 @@ namespace TaricSharp.Services
         public void CreateTimerMessage(SocketCommandContext context, in int mins)
         {
             // TODO: Subscribe to the event if there are no times currently being done
-
             throw new NotImplementedException();
         }
-
 
         private void EndTimerMessage()
         {
