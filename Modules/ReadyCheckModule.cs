@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
-using TaricSharp.Services.ReadyCheck;
+using TaricSharp.Services;
 
 namespace TaricSharp.Modules
 {

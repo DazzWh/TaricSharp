@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Discord.Commands;
 using TaricSharp.Messages;
 
@@ -41,9 +42,13 @@ namespace TaricSharp.Services
             }
         }
 
-        public void CreateTimerMessage(SocketCommandContext context, in int mins)
+        public async Task CreateTimerMessage(SocketCommandContext context, int minutes)
         {
             // TODO: Subscribe to the event if there are no times currently being done
+
+            var msg = await context.Channel.SendMessageAsync("Creating timer...");
+
+            _timerMessages.Add(new TimerMessage(msg, minutes));
             throw new NotImplementedException();
         }
 

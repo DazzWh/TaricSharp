@@ -68,7 +68,7 @@ namespace TaricSharp.Services
             var msg = await channel.GetMessageAsync(message.Id);
             var readyCheck = _readyChecks.FirstOrDefault(m => m.ReadyMsg.Id == msg.Id);
 
-            if (readyCheck == null || !reaction.User.IsSpecified)
+            if (readyCheck == null)
                 return;
 
             if (reaction.Emote.Equals(_readyEmoji))
