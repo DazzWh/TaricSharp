@@ -61,7 +61,7 @@ namespace TaricSharp.Messages
             await UpdateMessage();
         }
 
-        public async Task Finish()
+        public async Task FinishMessage()
         {
             await UpdateFinishedMessage();
 
@@ -159,5 +159,7 @@ namespace TaricSharp.Messages
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        public override int GetHashCode() => ReadyMsg.GetHashCode();
     }
 }

@@ -33,7 +33,8 @@ namespace TaricSharp.Services
         }
 
         public async Task CreateReadyCheck(
-            SocketCommandContext context, Game game)
+            SocketCommandContext context, 
+            Game game)
         {
             var msg = await context.Channel.SendMessageAsync("Creating ready check...");
 
@@ -82,9 +83,9 @@ namespace TaricSharp.Services
 
             if (reaction.Emote.Equals(_finishEmoji) && reaction.User.Value.Id.Equals(readyCheck.Creator.Id))
             {
-                await readyCheck.Finish();
+                await readyCheck.FinishMessage();
                 _readyChecks.Remove(readyCheck);
-                return; // Finish removes all reactions so no need to "fall through"
+                return; // FinishMessage removes all reactions so no need to "fall through"
             }
 
             await readyCheck.ReadyMsg.RemoveReactionAsync(reaction.Emote, reaction.User.Value);

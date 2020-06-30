@@ -5,7 +5,6 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using TaricSharp.Services;
-using TaricSharp.Services.ReadyCheck;
 
 namespace TaricSharp
 {
@@ -34,6 +33,7 @@ namespace TaricSharp
             }))
             .AddSingleton<LoggingService>()
             .AddSingleton<ReadyCheckService>()
+            .AddSingleton<TimerService>()
             .AddSingleton<CommandHandler>()
             .AddSingleton<PinService>()
             .AddSingleton<Random>()

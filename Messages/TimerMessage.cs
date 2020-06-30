@@ -47,6 +47,11 @@ namespace TaricSharp.Messages
             });
         }
 
+        public void FinishMessage()
+        {
+            throw new NotImplementedException();
+        }
+
         private string UsersToString()
         {
             return _users.Count > 0
@@ -65,5 +70,9 @@ namespace TaricSharp.Messages
 
             return embed;
         }
+
+        public override int GetHashCode() => _message.GetHashCode();
+
+        
     }
 }

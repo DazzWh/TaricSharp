@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
+using TaricSharp.Services;
 
 namespace TaricSharp.Modules
 {
@@ -17,13 +18,13 @@ namespace TaricSharp.Modules
         [Summary("Initiates a timer")]
         [Remarks("")]
         public async Task InitiateTimer(
-            int mins)
+            int minutes)
         {
             // Check input is valid
             // Give user feedback
             // Start timer service
 
-            _timerService.CreateTimerMessage(Context, mins);
+            await _timerService.CreateTimerMessage(Context, minutes);
         }
     }
 }
