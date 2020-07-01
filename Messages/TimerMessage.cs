@@ -7,36 +7,18 @@ using Discord.Rest;
 
 namespace TaricSharp.Messages
 {
-    public class TimerMessage
+    public class TimerMessage : UserListMessage
     {
-        private readonly RestUserMessage _message;
-        private readonly Dictionary<ulong, string> _users = new Dictionary<ulong, string>();
-
         public readonly DateTime EndTime;
 
         public TimerMessage(
             RestUserMessage message,
-            int minutes)
+            int minutes) : base(message)
         {
-            _message = message;
             EndTime = DateTime.Now.AddMinutes(minutes);
         }
 
-        public async Task AddUser(
-            IUser user)
-        {
-            _users.TryAdd(user.Id, user.Username);
-            await UpdateMessage();
-        }
-
-        public async Task RemoveUser(
-            IUser user)
-        {
-            _users.Remove(user.Id);
-            await UpdateMessage();
-        }
-
-        private async Task UpdateMessage()
+        protected override async Task UpdateMessage()
         {
             var embed = MessageEmbedBuilder();
 
@@ -70,9 +52,5 @@ namespace TaricSharp.Messages
 
             return embed;
         }
-
-        public override int GetHashCode() => _message.GetHashCode();
-
-        
     }
 }

@@ -15,7 +15,10 @@ namespace TaricSharp.Services
         private readonly DiscordSocketClient _client;
         private readonly HashSet<TimerMessage> _timerMessages;
         private readonly HashSet<TimerEndMessage> _endMessages;
-        private Timer _timer;
+        private readonly Timer _timer;
+
+        private readonly Emoji _acceptEmoji = new Emoji("✔️");
+        private readonly Emoji _cancelEmoji = new Emoji("❌");
 
         public TimerService(
             DiscordSocketClient client)
@@ -36,18 +39,40 @@ namespace TaricSharp.Services
             _client.ReactionAdded += HandleReactionsAsync;
         }
 
-        private Task HandleReactionsAsync(
+        private async Task HandleReactionsAsync(
             Cacheable<IUserMessage, ulong> message,
             ISocketMessageChannel channel,
             SocketReaction reaction)
         {
-            // Todo: Handle when users hit the emoji buttons on timer or endTimer messages
-            throw new NotImplementedException();
+            if (!reaction.User.IsSpecified || reaction.User.Value.IsBot)
+                return;
+
+            var msg = await channel.GetMessageAsync(message.Id);
+            
+            var timerMessage = _timerMessages.FirstOrDefault(m => m.Id == msg.Id);
+            var endMessage = _endMessages.FirstOrDefault(m => m.Id == msg.Id);
+
+            if (timerMessage == null && endMessage == null)
+                return;
+
+            if (timerMessage != null)
+            {
+                // Handle timer messages reactions
+
+            }
+
+            if (endMessage != null)
+            {
+                // Handle end messages reactions
+            }
         }
 
         public async Task CreateTimerMessage(SocketCommandContext context, int minutes)
         {
             var msg = await context.Channel.SendMessageAsync("Creating timer...");
+
+            await msg.AddReactionAsync(_acceptEmoji);
+            await msg.AddReactionAsync(_cancelEmoji);
 
             _timerMessages.Add(new TimerMessage(msg, minutes));
             throw new NotImplementedException();

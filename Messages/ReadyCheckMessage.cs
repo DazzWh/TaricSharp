@@ -8,9 +8,8 @@ using Color = Discord.Color;
 
 namespace TaricSharp.Messages
 {
-    public class ReadyCheckMessage
+    public class ReadyCheckMessage : UserListMessage
     {
-        public readonly RestUserMessage ReadyMsg;
         public readonly IUser Creator;
         private readonly Game _game;
 
@@ -20,24 +19,16 @@ namespace TaricSharp.Messages
         public ReadyCheckMessage(
             RestUserMessage readyMsg,
             IUser creator,
-            Game game)
+            Game game) : base(readyMsg)
         {
-            ReadyMsg = readyMsg;
             Creator = creator;
             _game = game;
 
             _readyUsers = new Dictionary<ulong, string>();
             _notifyUsers = new Dictionary<ulong, string>();
         }
-
-        public async Task AddReadyUser(
-            IUser user)
-        {
-            _readyUsers.TryAdd(user.Id, user.Username);
-            await UpdateMessage();
-        }
-
-        public async Task RemoveReadyUser(
+        
+        public override async Task RemoveUser(
             IUser user)
         {
             _readyUsers.Remove(user.Id);
@@ -67,18 +58,18 @@ namespace TaricSharp.Messages
 
             foreach (var userIdName in _notifyUsers)
             {
-                var user = await ReadyMsg.Channel.GetUserAsync(userIdName.Key);
-                await user.SendMessageAsync($"Ready check finished! {ReadyMsg.GetJumpUrl()}");
+                var user = await _message.Channel.GetUserAsync(userIdName.Key);
+                await user.SendMessageAsync($"Ready check finished! {_message.GetJumpUrl()}");
             }
 
-            await ReadyMsg.RemoveAllReactionsAsync();
+            await _message.RemoveAllReactionsAsync();
         }
 
-        private async Task UpdateMessage()
+        protected override async Task UpdateMessage()
         {
             var embed = BaseEmbedBuilder();
 
-            await ReadyMsg.ModifyAsync(m =>
+            await _message.ModifyAsync(m =>
             {
                 m.Content = "";
                 m.Embed = embed.Build();
@@ -94,7 +85,7 @@ namespace TaricSharp.Messages
                 .WithColor(Color.Green)
                 .WithFooter("Game on!");
 
-            await ReadyMsg.ModifyAsync(m =>
+            await _message.ModifyAsync(m =>
             {
                 m.Content = "";
                 m.Embed = embed.Build();
@@ -160,6 +151,6 @@ namespace TaricSharp.Messages
             }
         }
 
-        public override int GetHashCode() => ReadyMsg.GetHashCode();
+        public override int GetHashCode() => _message.GetHashCode();
     }
 }

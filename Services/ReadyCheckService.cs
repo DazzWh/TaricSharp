@@ -73,10 +73,10 @@ namespace TaricSharp.Services
                 return;
 
             if (reaction.Emote.Equals(_readyEmoji))
-                await readyCheck.AddReadyUser(reaction.User.Value);
+                await readyCheck.AddUser(reaction.User.Value);
 
             if (reaction.Emote.Equals(_cancelEmoji))
-                await readyCheck.RemoveReadyUser(reaction.User.Value);
+                await readyCheck.RemoveUser(reaction.User.Value);
 
             if (reaction.Emote.Equals(_notifyEmoji))
                 await readyCheck.ToggleNotifyOnUser(reaction.User.Value);
