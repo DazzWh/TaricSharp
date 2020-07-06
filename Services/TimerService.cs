@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Discord.Rest;
 using Discord.WebSocket;
 using TaricSharp.Messages;
 
@@ -28,7 +29,7 @@ namespace TaricSharp.Services
             _endMessages = new HashSet<TimerEndMessage>();
 
             _timer = new Timer(
-                e => CheckMessages(),
+                e => await CheckMessages(),
                 null,
                 TimeSpan.Zero,
                 TimeSpan.FromMinutes(1));
@@ -78,13 +79,14 @@ namespace TaricSharp.Services
             throw new NotImplementedException();
         }
 
-        private void CheckMessages()
+        private async Task CheckMessages()
         {
             foreach (var msg in
                 _timerMessages.Where(msg => msg.EndTime < DateTime.Now))
             {
-                _endMessages.Add(new TimerEndMessage());
-                msg.FinishMessage();
+                var endMsg = (RestUserMessage) await msg.Channel.SendMessageAsync("Ending timer...");
+                _endMessages.Add(new TimerEndMessage(endMsg));
+                await msg.FinishMessage();
                 _timerMessages.Remove(msg);
             }
 

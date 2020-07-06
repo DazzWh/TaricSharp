@@ -1,15 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Rest;
+using Discord.WebSocket;
 
 namespace TaricSharp.Messages
 {
     public class TimerMessage : UserListMessage
     {
         public readonly DateTime EndTime;
+
+        public IMessageChannel Channel => _message.Channel;
 
         public TimerMessage(
             RestUserMessage message,
@@ -20,18 +22,20 @@ namespace TaricSharp.Messages
 
         protected override async Task UpdateMessage()
         {
-            var embed = MessageEmbedBuilder();
-
             await _message.ModifyAsync(m =>
             {
                 m.Content = "";
-                m.Embed = embed.Build();
+                m.Embed = MessageEmbedBuilder().Build();
             });
         }
 
-        public void FinishMessage()
+        public async Task FinishMessage()
         {
-            throw new NotImplementedException();
+            await _message.ModifyAsync(m =>
+            {
+                m.Content = "";
+                m.Embed = FinishedMessageEmbedBuilder().Build();
+            });
         }
 
         private string UsersToString()
@@ -48,9 +52,18 @@ namespace TaricSharp.Messages
         {
             var embed = new EmbedBuilder()
                 .WithTitle($"Timer!")
-                .AddField("Players:", "```" + UsersToString() + "```", true);
+                .AddField("Players:", "```" + UsersToString() + "```", true)
+                .WithColor(Color.DarkGreen);
 
             return embed;
+        }
+
+        private EmbedBuilder FinishedMessageEmbedBuilder()
+        {
+            return new EmbedBuilder()
+                .WithTitle($"Timer entry finished...")
+                .AddField("Players:", "```" + UsersToString() + "```", true)
+                .WithColor(Color.DarkRed);
         }
     }
 }

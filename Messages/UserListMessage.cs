@@ -16,7 +16,6 @@ namespace TaricSharp.Messages
         }
 
         public ulong Id => _message.Id;
-        public override int GetHashCode() => _message.GetHashCode();
 
         public virtual async Task AddUser(
             IUser user)
@@ -33,5 +32,6 @@ namespace TaricSharp.Messages
         }
 
         protected abstract Task UpdateMessage();
+        public override int GetHashCode() => _message.GetHashCode();
     }
 }
