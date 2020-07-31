@@ -135,6 +135,7 @@ namespace TaricSharp.Services.ReadyCheck
         private void AddGameSpecificEmbedOptions(
             EmbedBuilder embed)
         {
+            // TODO: Refactor how games data is handled. This is messy.
             switch (_game)
             {
                 case Game.ProjectWinter:
@@ -149,6 +150,30 @@ namespace TaricSharp.Services.ReadyCheck
                         //.WithUrl("steam://run/570")
                         .WithColor(Color.DarkRed)
                         .WithThumbnailUrl("https://steamcdn-a.akamaihd.net/steam/apps/570/header.jpg");
+                    break;
+
+                case Game.FallGuys:
+                    embed.WithTitle($"{embed.Title} for Fall Guys!")
+                        .WithColor(Color.Magenta)
+                        .WithThumbnailUrl("https://steamcdn-a.akamaihd.net/steam/apps/1097150/header.jpg");
+                    break;
+
+                case Game.Pavlov:
+                    embed.WithTitle($"{embed.Title} for Pavlov!")
+                        .WithColor(Color.DarkGreen)
+                        .WithThumbnailUrl("https://steamcdn-a.akamaihd.net/steam/apps/555160/header.jpg");
+                    break;
+
+                case Game.KillingFloor:
+                    embed.WithTitle($"{embed.Title} for Killing Floor!")
+                        .WithColor(Color.Red)
+                        .WithThumbnailUrl("https://steamcdn-a.akamaihd.net/steam/apps/232090/header.jpg");
+                    break;
+
+                case Game.JackBox:
+                    embed.WithTitle($"{embed.Title} for JackBox!")
+                        .WithColor(Color.LightOrange)
+                        .WithThumbnailUrl("https://steamcdn-a.akamaihd.net/steam/apps/331670/header.jpg");
                     break;
 
                 case Game.None:
