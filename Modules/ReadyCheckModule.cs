@@ -46,6 +46,18 @@ namespace TaricSharp.Modules
 
                 if (role.Name.Equals("Winter"))
                     return Game.ProjectWinter;
+
+                if (role.Name.Equals("Fall Guys"))
+                    return Game.FallGuys;
+
+                if (role.Name.Equals("Pavlov"))
+                    return Game.Pavlov;
+
+                if (role.Name.Equals("KF2"))
+                    return Game.KillingFloor;
+
+                if (role.Name.Equals("Jackbox"))
+                    return Game.JackBox;
             }
 
             return Game.None;

@@ -7,6 +7,10 @@
     {
         None,
         Dota,
-        ProjectWinter
+        ProjectWinter,
+        FallGuys,
+        Pavlov,
+        KillingFloor,
+        JackBox,
     }
 }
