@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Rest;
+using TaricSharp.Services;
 
 namespace TaricSharp.Messages
 {
@@ -62,8 +63,8 @@ namespace TaricSharp.Messages
         {
             var embed = new EmbedBuilder()
                 .WithTitle($"⌛ Timer")
-                .AddField("Time left:", $"{Math.Round((EndTime - DateTime.Now).TotalMinutes)} minutes.")
-                .AddField("Players:", "```" + UsersToString() + "```", true)
+                .AddField("Remaining:", $"{Math.Round((EndTime - DateTime.Now).TotalMinutes)} minutes.")
+                .AddField("Committed:", "```" + UsersToString() + "```", true)
                 .WithColor(IsLocked ? Color.DarkBlue : Color.DarkGreen);
 
             return embed;
@@ -73,7 +74,7 @@ namespace TaricSharp.Messages
         {
             return new EmbedBuilder()
                 .WithTitle($"Timer finished")
-                .AddField("Players:", "```" + UsersToString() + "```", true)
+                .AddField("Committed:", "```" + UsersToString() + "```", true)
                 .WithColor(Color.DarkRed);
         }
     }
