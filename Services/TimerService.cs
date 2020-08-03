@@ -16,8 +16,8 @@ namespace TaricSharp.Services
         private readonly DiscordSocketClient _client;
         private readonly HashSet<TimerMessage> _timerMessages;
         private readonly HashSet<TimerEndMessage> _endMessages;
-        private readonly Timer _timer;
 
+        private Timer _timer;
         private readonly Emoji _acceptEmoji = new Emoji("✔️");
         private readonly Emoji _cancelEmoji = new Emoji("❌");
 
@@ -27,44 +27,16 @@ namespace TaricSharp.Services
             _client = client;
             _timerMessages = new HashSet<TimerMessage>();
             _endMessages = new HashSet<TimerEndMessage>();
-
-            _timer = new Timer(async e => await CheckMessages(),
-                null,
-                TimeSpan.Zero,
-                TimeSpan.FromMinutes(1));
         }
 
         public void Initialize()
         {
             _client.ReactionAdded += HandleReactionsAsync;
-        }
 
-        private async Task HandleReactionsAsync(
-            Cacheable<IUserMessage, ulong> message,
-            ISocketMessageChannel channel,
-            SocketReaction reaction)
-        {
-            if (!reaction.User.IsSpecified || reaction.User.Value.IsBot)
-                return;
-
-            var msg = await channel.GetMessageAsync(message.Id);
-            
-            var timerMessage = _timerMessages.FirstOrDefault(m => m.Id == msg.Id);
-            var endMessage = _endMessages.FirstOrDefault(m => m.Id == msg.Id);
-
-            if (timerMessage == null && endMessage == null)
-                return;
-
-            if (timerMessage != null)
-            {
-                // Handle timer messages reactions
-
-            }
-
-            if (endMessage != null)
-            {
-                // Handle end messages reactions
-            }
+            _timer = new Timer(async e => await CheckMessages(),
+                null,
+                TimeSpan.Zero,
+                TimeSpan.FromSeconds(30));
         }
 
         public async Task CreateTimerMessage(SocketCommandContext context, int minutes)
@@ -74,28 +46,50 @@ namespace TaricSharp.Services
             await msg.AddReactionAsync(_acceptEmoji);
             await msg.AddReactionAsync(_cancelEmoji);
 
-            _timerMessages.Add(new TimerMessage(msg, minutes));
-            throw new NotImplementedException();
+            var timerMessage = new TimerMessage(msg, minutes);
+            _timerMessages.Add(timerMessage);
+            await timerMessage.AddUser(context.User);
+        }
+
+        private async Task HandleReactionsAsync(
+            Cacheable<IUserMessage, ulong> message,
+            ISocketMessageChannel channel,
+            SocketReaction reaction)
+        {
+            // Todo: Abstract this class into a "message service" class so this code isn't written 3 times.
+            if (!reaction.User.IsSpecified || reaction.User.Value.IsBot)
+                return;
+
+            var msg = await channel.GetMessageAsync(message.Id);
+            var timerMessage = _timerMessages.FirstOrDefault(m => m.Id == msg.Id);
+
+            if (timerMessage == null)
+                return;
+
+            if (reaction.Emote.Equals(_acceptEmoji))
+                await timerMessage.AddUser(reaction.User.Value);
+
+            if (reaction.Emote.Equals(_cancelEmoji))
+                await timerMessage.RemoveUser(reaction.User.Value);
+
+            await timerMessage.Message.RemoveReactionAsync(reaction.Emote, reaction.User.Value);
         }
 
         private async Task CheckMessages()
         {
-            foreach (var msg in
-                _timerMessages.Where(msg => msg.EndTime < DateTime.Now))
+            var finishedTimers = 
+                _timerMessages.Where(msg => msg.EndTime < DateTime.Now)
+                .ToArray();
+
+            foreach (var msg in finishedTimers)
             {
+                // Create an end message
                 var endMsg = (RestUserMessage) await msg.Channel.SendMessageAsync("Ending timer...");
                 _endMessages.Add(new TimerEndMessage(endMsg));
                 await msg.FinishMessage();
-                _timerMessages.Remove(msg);
             }
 
-            foreach (var msg in
-                _endMessages.Where(msg => msg.EndTime < DateTime.Now))
-            {
-                msg.FinishMessage();
-                // Increment the database of users who didn't accept in time
-                _endMessages.Remove(msg);
-            }
+            _timerMessages.RemoveWhere(msg => finishedTimers.Contains(msg));
         }
     }
 }

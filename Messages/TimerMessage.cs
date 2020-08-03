@@ -24,7 +24,7 @@ namespace TaricSharp.Messages
         {
             await Message.ModifyAsync(m =>
             {
-                m.Content = "";
+                m.Content = $"{Math.Round((EndTime - DateTime.Now).TotalSeconds)} Seconds left of the timer!";
                 m.Embed = MessageEmbedBuilder().Build();
             });
         }
