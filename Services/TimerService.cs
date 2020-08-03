@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -28,8 +28,7 @@ namespace TaricSharp.Services
             _timerMessages = new HashSet<TimerMessage>();
             _endMessages = new HashSet<TimerEndMessage>();
 
-            _timer = new Timer(
-                e => await CheckMessages(),
+            _timer = new Timer(async e => await CheckMessages(),
                 null,
                 TimeSpan.Zero,
                 TimeSpan.FromMinutes(1));

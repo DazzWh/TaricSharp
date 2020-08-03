@@ -7,15 +7,15 @@ namespace TaricSharp.Messages
 {
     public abstract class UserListMessage
     {
-        protected readonly RestUserMessage _message;
+        public readonly RestUserMessage Message;
         protected readonly Dictionary<ulong, string> _users = new Dictionary<ulong, string>();
 
         protected UserListMessage(RestUserMessage message)
         {
-            _message = message;
+            Message = message;
         }
 
-        public ulong Id => _message.Id;
+        public ulong Id => Message.Id;
 
         public virtual async Task AddUser(
             IUser user)
@@ -32,6 +32,6 @@ namespace TaricSharp.Messages
         }
 
         protected abstract Task UpdateMessage();
-        public override int GetHashCode() => _message.GetHashCode();
+        public override int GetHashCode() => Message.GetHashCode();
     }
 }

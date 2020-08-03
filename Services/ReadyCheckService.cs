@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -45,7 +45,7 @@ namespace TaricSharp.Services
 
             var readyCheck = new ReadyCheckMessage(msg, context.User, game);
             _readyChecks.Add(readyCheck);
-            await readyCheck.AddReadyUser(context.User);
+            await readyCheck.AddUser(context.User);
 
             RemoveOldReadyChecks();
         }
@@ -53,7 +53,7 @@ namespace TaricSharp.Services
         private void RemoveOldReadyChecks()
         {
             _readyChecks.Where(rc => 
-                    (DateTimeOffset.Now - rc.ReadyMsg.Timestamp).TotalHours > ReadyCheckTimeLimitHours)
+                    (DateTimeOffset.Now - rc.Message.Timestamp).TotalHours > ReadyCheckTimeLimitHours)
                 .ToList()
                 .ForEach(rc => _readyChecks.Remove(rc));
         }
@@ -67,7 +67,7 @@ namespace TaricSharp.Services
                 return;
 
             var msg = await channel.GetMessageAsync(message.Id);
-            var readyCheck = _readyChecks.FirstOrDefault(m => m.ReadyMsg.Id == msg.Id);
+            var readyCheck = _readyChecks.FirstOrDefault(m => m.Message.Id == msg.Id);
 
             if (readyCheck == null)
                 return;
@@ -88,7 +88,7 @@ namespace TaricSharp.Services
                 return; // FinishMessage removes all reactions so no need to "fall through"
             }
 
-            await readyCheck.ReadyMsg.RemoveReactionAsync(reaction.Emote, reaction.User.Value);
+            await readyCheck.Message.RemoveReactionAsync(reaction.Emote, reaction.User.Value);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace TaricSharp.Messages
     {
         public readonly DateTime EndTime;
 
-        public IMessageChannel Channel => _message.Channel;
+        public IMessageChannel Channel => Message.Channel;
 
         public TimerMessage(
             RestUserMessage message,
@@ -22,7 +22,7 @@ namespace TaricSharp.Messages
 
         protected override async Task UpdateMessage()
         {
-            await _message.ModifyAsync(m =>
+            await Message.ModifyAsync(m =>
             {
                 m.Content = "";
                 m.Embed = MessageEmbedBuilder().Build();
@@ -31,7 +31,7 @@ namespace TaricSharp.Messages
 
         public async Task FinishMessage()
         {
-            await _message.ModifyAsync(m =>
+            await Message.ModifyAsync(m =>
             {
                 m.Content = "";
                 m.Embed = FinishedMessageEmbedBuilder().Build();

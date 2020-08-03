@@ -58,18 +58,18 @@ namespace TaricSharp.Messages
 
             foreach (var userIdName in _notifyUsers)
             {
-                var user = await _message.Channel.GetUserAsync(userIdName.Key);
-                await user.SendMessageAsync($"Ready check finished! {_message.GetJumpUrl()}");
+                var user = await Message.Channel.GetUserAsync(userIdName.Key);
+                await user.SendMessageAsync($"Ready check finished! {Message.GetJumpUrl()}");
             }
 
-            await _message.RemoveAllReactionsAsync();
+            await Message.RemoveAllReactionsAsync();
         }
 
         protected override async Task UpdateMessage()
         {
             var embed = BaseEmbedBuilder();
 
-            await _message.ModifyAsync(m =>
+            await Message.ModifyAsync(m =>
             {
                 m.Content = "";
                 m.Embed = embed.Build();
@@ -85,7 +85,7 @@ namespace TaricSharp.Messages
                 .WithColor(Color.Green)
                 .WithFooter("Game on!");
 
-            await _message.ModifyAsync(m =>
+            await Message.ModifyAsync(m =>
             {
                 m.Content = "";
                 m.Embed = embed.Build();
@@ -176,6 +176,6 @@ namespace TaricSharp.Messages
             }
         }
 
-        public override int GetHashCode() => _message.GetHashCode();
+        public override int GetHashCode() => Message.GetHashCode();
     }
 }
