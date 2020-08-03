@@ -13,6 +13,10 @@ namespace TaricSharp.Services
 {
     public class TimerService
     {
+
+        private const int CheckTimeInSeconds = 30; // How often we update messages
+        private const int LockTimeInMinutes = 1;   // How long a user has to join a timer
+
         private readonly DiscordSocketClient _client;
         private readonly HashSet<TimerMessage> _timerMessages;
         private readonly HashSet<TimerEndMessage> _endMessages;
@@ -36,7 +40,7 @@ namespace TaricSharp.Services
             _timer = new Timer(async e => await CheckMessages(),
                 null,
                 TimeSpan.Zero,
-                TimeSpan.FromSeconds(30));
+                TimeSpan.FromSeconds(CheckTimeInSeconds));
         }
 
         public async Task CreateTimerMessage(SocketCommandContext context, int minutes)
@@ -56,7 +60,7 @@ namespace TaricSharp.Services
             ISocketMessageChannel channel,
             SocketReaction reaction)
         {
-            // Todo: Abstract this class into a "message service" class so this code isn't written 3 times.
+            // TODO: Abstract this class into a "message service" class so this code isn't written 3 times.
             if (!reaction.User.IsSpecified || reaction.User.Value.IsBot)
                 return;
 
@@ -66,20 +70,45 @@ namespace TaricSharp.Services
             if (timerMessage == null)
                 return;
 
-            if (reaction.Emote.Equals(_acceptEmoji))
-                await timerMessage.AddUser(reaction.User.Value);
+            if (!timerMessage.IsLocked)
+            {
+                if (reaction.Emote.Equals(_acceptEmoji))
+                    await timerMessage.AddUser(reaction.User.Value);
 
-            if (reaction.Emote.Equals(_cancelEmoji))
-                await timerMessage.RemoveUser(reaction.User.Value);
+                if (reaction.Emote.Equals(_cancelEmoji))
+                    await timerMessage.RemoveUser(reaction.User.Value);
+            }
 
             await timerMessage.Message.RemoveReactionAsync(reaction.Emote, reaction.User.Value);
         }
 
+        /// <summary>
+        /// Called by a timer every few seconds to make sure the timers are up to date
+        /// </summary>
+        /// <returns></returns>
         private async Task CheckMessages()
         {
-            var finishedTimers = 
+            // TODO: Make sure Message exists
+            await LockMessages();
+            await FinishMessages();
+        }
+
+        /// <summary>
+        /// Messages are locked after a certain time so people can't back out
+        /// after saying they will be ready at a certain time
+        /// </summary>
+        private async Task LockMessages()
+        {
+            foreach (var msg in
+                _timerMessages.Where(msg => msg.StartTime.AddMinutes(LockTimeInMinutes) < DateTime.Now))
+                await msg.LockMessage();
+        }
+
+        private async Task FinishMessages()
+        {
+            var finishedTimers =
                 _timerMessages.Where(msg => msg.EndTime < DateTime.Now)
-                .ToArray();
+                    .ToArray();
 
             foreach (var msg in finishedTimers)
             {

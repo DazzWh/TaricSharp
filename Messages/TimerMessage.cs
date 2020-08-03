@@ -1,15 +1,17 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Rest;
-using Discord.WebSocket;
 
 namespace TaricSharp.Messages
 {
     public class TimerMessage : UserListMessage
     {
+
+        public readonly DateTime StartTime;
         public readonly DateTime EndTime;
+        public bool IsLocked { get; private set; } = false;
 
         public IMessageChannel Channel => Message.Channel;
 
@@ -17,6 +19,7 @@ namespace TaricSharp.Messages
             RestUserMessage message,
             int minutes) : base(message)
         {
+            StartTime = DateTime.Now;
             EndTime = DateTime.Now.AddMinutes(minutes);
         }
 
@@ -24,9 +27,16 @@ namespace TaricSharp.Messages
         {
             await Message.ModifyAsync(m =>
             {
-                m.Content = $"{Math.Round((EndTime - DateTime.Now).TotalSeconds)} Seconds left of the timer!";
+                m.Content = "";
                 m.Embed = MessageEmbedBuilder().Build();
             });
+        }
+
+        public async Task LockMessage()
+        {
+            IsLocked = true;
+            await Message.RemoveAllReactionsAsync();
+            await UpdateMessage();
         }
 
         public async Task FinishMessage()
@@ -51,9 +61,10 @@ namespace TaricSharp.Messages
         private EmbedBuilder MessageEmbedBuilder()
         {
             var embed = new EmbedBuilder()
-                .WithTitle($"Timer!")
+                .WithTitle($"⌛ Timer")
+                .AddField("Time left:", $"{Math.Round((EndTime - DateTime.Now).TotalMinutes)} minutes.")
                 .AddField("Players:", "```" + UsersToString() + "```", true)
-                .WithColor(Color.DarkGreen);
+                .WithColor(IsLocked ? Color.DarkBlue : Color.DarkGreen);
 
             return embed;
         }
@@ -61,7 +72,7 @@ namespace TaricSharp.Messages
         private EmbedBuilder FinishedMessageEmbedBuilder()
         {
             return new EmbedBuilder()
-                .WithTitle($"Timer entry finished...")
+                .WithTitle($"Timer finished")
                 .AddField("Players:", "```" + UsersToString() + "```", true)
                 .WithColor(Color.DarkRed);
         }
