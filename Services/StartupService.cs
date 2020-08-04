@@ -14,7 +14,8 @@ namespace TaricSharp.Services
         private readonly CommandHandler _commands;
         private readonly PinService _pinService;
         private readonly ReadyCheckService _readyCheckService;
-        private readonly TimerService _timerService;
+        private readonly TimerStartService _timerStartService;
+        private readonly TimerEndService _timerEndService;
         private readonly LoggingService _logging;
 
         public StartupService(
@@ -22,14 +23,16 @@ namespace TaricSharp.Services
             CommandHandler commands,
             PinService pinService,
             ReadyCheckService readyCheckService,
-            TimerService timerService,
+            TimerStartService timerStartService,
+            TimerEndService timerEndService,
             LoggingService logging)
         {
             _client = discord;
             _commands = commands;
             _pinService = pinService;
             _readyCheckService = readyCheckService;
-            _timerService = timerService;
+            _timerStartService = timerStartService;
+            _timerEndService = timerEndService;
             _logging = logging;
         }
 
@@ -37,7 +40,8 @@ namespace TaricSharp.Services
         {
             _logging.Initialize();
             _readyCheckService.Initialize();
-            _timerService.Initialize();
+            _timerStartService.Initialize();
+            _timerEndService.Initialize();
 
             await _client.LoginAsync(TokenType.Bot,
                 Environment.GetEnvironmentVariable("DiscordToken"));

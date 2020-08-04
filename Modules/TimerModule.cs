@@ -6,12 +6,12 @@ namespace TaricSharp.Modules
 {
     public class TimerModule : ModuleBase<SocketCommandContext>
     {
-        private readonly TimerService _timerService;
+        private readonly TimerStartService _timerStartService;
 
         public TimerModule(
-            TimerService timerService)
+            TimerStartService timerStartService)
         {
-            _timerService = timerService;
+            _timerStartService = timerStartService;
         }
 
         [Command("timer")]
@@ -24,7 +24,7 @@ namespace TaricSharp.Modules
             // Give user feedback
             // Start timer service
 
-            await _timerService.CreateTimerMessage(Context, minutes);
+            await _timerStartService.CreateTimerMessage(Context, minutes);
         }
     }
 }

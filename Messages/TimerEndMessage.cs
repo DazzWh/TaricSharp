@@ -8,18 +8,20 @@ namespace TaricSharp.Messages
     {
         public DateTime EndTime { get; set; }
 
+        public TimerEndMessage(RestUserMessage message) : base(message)
+        {
+            EndTime = DateTime.Now.AddMinutes(1);
+        }
+
         protected override Task UpdateMessage()
         {
             throw new NotImplementedException();
         }
 
-        public void FinishMessage()
+        public async Task FinishMessage()
         {
             throw new NotImplementedException();
         }
 
-        public TimerEndMessage(RestUserMessage message) : base(message)
-        {
-        }
     }
 }

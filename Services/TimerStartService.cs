@@ -11,26 +11,27 @@ using TaricSharp.Messages;
 
 namespace TaricSharp.Services
 {
-    public class TimerService
+    public class TimerStartService
     {
 
         private const int CheckTimeInSeconds = 30; // How often we update messages
         private const int LockTimeInMinutes = 1;   // How long a user has to join a timer
 
         private readonly DiscordSocketClient _client;
+        private readonly TimerEndService _timerEndService;
         private readonly HashSet<TimerMessage> _timerMessages;
-        private readonly HashSet<TimerEndMessage> _endMessages;
 
         private Timer _timer;
         private readonly Emoji _acceptEmoji = new Emoji("✔️");
         private readonly Emoji _cancelEmoji = new Emoji("❌");
 
-        public TimerService(
-            DiscordSocketClient client)
+        public TimerStartService(
+            DiscordSocketClient client,
+            TimerEndService timerEndService)
         {
             _client = client;
+            _timerEndService = timerEndService;
             _timerMessages = new HashSet<TimerMessage>();
-            _endMessages = new HashSet<TimerEndMessage>();
         }
 
         public void Initialize()
@@ -43,6 +44,12 @@ namespace TaricSharp.Services
                 TimeSpan.FromSeconds(CheckTimeInSeconds));
         }
 
+        /// <summary>
+        /// Creates a timer message.
+        /// </summary>
+        /// <param name="context">The discord context used for message creation.</param>
+        /// <param name="minutes">An integer representing how long the Timer should last in minutes.</param>
+        /// <returns></returns>
         public async Task CreateTimerMessage(SocketCommandContext context, int minutes)
         {
             var msg = await context.Channel.SendMessageAsync("Creating timer...");
@@ -55,6 +62,10 @@ namespace TaricSharp.Services
             await timerMessage.AddUser(context.User);
         }
 
+        /// <summary>
+        /// Called whenever a reaction is created in the server.
+        /// If the reaction is a an accept or cancel emoji on a TimerMessage adds that user as committed or not to the timer.
+        /// </summary>
         private async Task HandleReactionsAsync(
             Cacheable<IUserMessage, ulong> message,
             ISocketMessageChannel channel,
@@ -85,7 +96,6 @@ namespace TaricSharp.Services
         /// <summary>
         /// Called by a timer every few seconds to make sure the timers are up to date
         /// </summary>
-        /// <returns></returns>
         private async Task CheckMessages()
         {
             // TODO: Make sure Message exists
@@ -94,8 +104,8 @@ namespace TaricSharp.Services
         }
 
         /// <summary>
-        /// Messages are locked after a certain time so people can't back out
-        /// after saying they will be ready at a certain time
+        /// Messages are locked after a certain time
+        /// This way people can't just back out after saying they will be there at that time.
         /// </summary>
         private async Task LockMessages()
         {
@@ -104,6 +114,10 @@ namespace TaricSharp.Services
                 await msg.LockMessage();
         }
 
+        /// <summary>
+        /// Checks for messages that are past their EndTime date
+        /// Calls FinishMessage and creates an EndTimerMessage for each completed timer.
+        /// </summary>
         private async Task FinishMessages()
         {
             var finishedTimers =
@@ -114,11 +128,13 @@ namespace TaricSharp.Services
             {
                 // Create an end message
                 var endMsg = (RestUserMessage) await msg.Channel.SendMessageAsync("Ending timer...");
-                _endMessages.Add(new TimerEndMessage(endMsg));
+                _timerEndService.CreateEndTimerMessage(msg);
                 await msg.FinishMessage();
+                _timerMessages.Remove(msg);
             }
 
-            _timerMessages.RemoveWhere(msg => finishedTimers.Contains(msg));
+            // TODO: remove this if no issues
+            //_timerMessages.RemoveWhere(msg => finishedTimers.Contains(msg));
         }
     }
 }

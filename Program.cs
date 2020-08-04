@@ -25,7 +25,6 @@ namespace TaricSharp
                 LogLevel = LogSeverity.Verbose,
                 MessageCacheSize = 1000 
             }))
-
             .AddSingleton(new CommandService(new CommandServiceConfig
             {
                 LogLevel = LogSeverity.Verbose,
@@ -33,7 +32,8 @@ namespace TaricSharp
             }))
             .AddSingleton<LoggingService>()
             .AddSingleton<ReadyCheckService>()
-            .AddSingleton<TimerService>()
+            .AddSingleton<TimerStartService>()
+            .AddSingleton<TimerEndService>()
             .AddSingleton<CommandHandler>()
             .AddSingleton<PinService>()
             .AddSingleton<Random>()
