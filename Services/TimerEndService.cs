@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
 using Discord.Rest;
 using Discord.WebSocket;
 using TaricSharp.Messages;
@@ -13,7 +12,7 @@ namespace TaricSharp.Services
 {
     public class TimerEndService
     {
-        private const int CheckTimeInSeconds = 30; // How often we update messages
+        private const int CheckTimeInSeconds = 20; // How often we update messages
         private const int HereTimeInSeconds = 60; // How long a user has to say they're here
 
         private readonly HashSet<TimerEndMessage> _endMessages;
@@ -40,16 +39,22 @@ namespace TaricSharp.Services
         }
 
         /// <summary>
-        /// Creates an EndTimerMessage from a finished TimerMessage.
+        /// Creates an EndTimerMessage from a finished TimerStartMessage.
         /// </summary>
-        /// <param name="tMsg">The Timer Message that has ended to create the EndTimerMessage from.</param>
-        public async Task CreateEndTimerMessage(TimerMessage tMsg)
+        /// <param name="timerStart">The Timer Message that has ended to create the EndTimerMessage from.</param>
+        public async Task CreateEndTimerMessage(TimerStartMessage timerStart)
         {
-            var msg = (RestUserMessage) await tMsg.Message.Channel.SendMessageAsync("Creating timer complete message...");
 
+            var msg = (RestUserMessage) await timerStart.Message.Channel.SendMessageAsync("Creating timer complete message...");
             await msg.AddReactionAsync(_acceptEmoji);
 
-            _endMessages.Add(new TimerEndMessage(msg));
+            var timerEndMessage = new TimerEndMessage(msg, HereTimeInSeconds);
+            foreach (var (id, name) in timerStart.Users)
+            {
+                await timerEndMessage.AddUser(id, name);
+            }
+
+            _endMessages.Add(timerEndMessage);
         }
 
         /// <summary>

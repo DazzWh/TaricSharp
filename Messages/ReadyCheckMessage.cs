@@ -65,7 +65,7 @@ namespace TaricSharp.Messages
             await Message.RemoveAllReactionsAsync();
         }
 
-        protected override async Task UpdateMessage()
+        public override async Task UpdateMessage()
         {
             var embed = BaseEmbedBuilder();
 
@@ -96,8 +96,8 @@ namespace TaricSharp.Messages
         {
             var embed = new EmbedBuilder()
                 .WithAuthor(Creator.Username, Creator.GetAvatarUrl())
-                .WithTitle($"Ready check")
-                .AddField("Players:", "```" + ReadyUsersToString() + "```", true)
+                .WithTitle("Ready check")
+                .AddField("Players:", $"```{ReadyUsersToString()}```", true)
                 .WithFooter("Use the reactions to ready up, email will send a pm when people are ready." +
                             Environment.NewLine +
                             "Creator can hit the red \"No Vacancy\" button to conclude the check.");

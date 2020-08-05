@@ -14,12 +14,12 @@ namespace TaricSharp.Services
     public class TimerStartService
     {
 
-        private const int CheckTimeInSeconds = 30; // How often we update messages
+        private const int CheckTimeInSeconds = 20; // How often we update messages
         private const int LockTimeInMinutes = 1;   // How long a user has to join a timer
 
         private readonly DiscordSocketClient _client;
         private readonly TimerEndService _timerEndService;
-        private readonly HashSet<TimerMessage> _timerMessages;
+        private readonly HashSet<TimerStartMessage> _timerMessages;
 
         private Timer _timer;
         private readonly Emoji _acceptEmoji = new Emoji("✔️");
@@ -31,7 +31,7 @@ namespace TaricSharp.Services
         {
             _client = client;
             _timerEndService = timerEndService;
-            _timerMessages = new HashSet<TimerMessage>();
+            _timerMessages = new HashSet<TimerStartMessage>();
         }
 
         public void Initialize()
@@ -57,14 +57,14 @@ namespace TaricSharp.Services
             await msg.AddReactionAsync(_acceptEmoji);
             await msg.AddReactionAsync(_cancelEmoji);
 
-            var timerMessage = new TimerMessage(msg, minutes);
+            var timerMessage = new TimerStartMessage(msg, minutes);
             _timerMessages.Add(timerMessage);
             await timerMessage.AddUser(context.User);
         }
 
         /// <summary>
         /// Called whenever a reaction is created in the server.
-        /// If the reaction is a an accept or cancel emoji on a TimerMessage adds that user as committed or not to the timer.
+        /// If the reaction is a an accept or cancel emoji on a TimerStartMessage adds that user as committed or not to the timer.
         /// </summary>
         private async Task HandleReactionsAsync(
             Cacheable<IUserMessage, ulong> message,
@@ -99,8 +99,14 @@ namespace TaricSharp.Services
         private async Task CheckMessages()
         {
             // TODO: Make sure Message exists
+            foreach (var msg in _timerMessages)
+            {
+                await msg.UpdateMessage();
+            }
+
             await LockMessages();
             await FinishMessages();
+            
         }
 
         /// <summary>
@@ -128,7 +134,7 @@ namespace TaricSharp.Services
             {
                 // Create an end message
                 var endMsg = (RestUserMessage) await msg.Channel.SendMessageAsync("Ending timer...");
-                _timerEndService.CreateEndTimerMessage(msg);
+                await _timerEndService.CreateEndTimerMessage(msg);
                 await msg.FinishMessage();
                 _timerMessages.Remove(msg);
             }

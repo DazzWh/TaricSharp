@@ -3,11 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Rest;
-using TaricSharp.Services;
 
 namespace TaricSharp.Messages
 {
-    public class TimerMessage : UserListMessage
+    public class TimerStartMessage : UserListMessage
     {
 
         public readonly DateTime StartTime;
@@ -16,7 +15,7 @@ namespace TaricSharp.Messages
 
         public IMessageChannel Channel => Message.Channel;
 
-        public TimerMessage(
+        public TimerStartMessage(
             RestUserMessage message,
             int minutes) : base(message)
         {
@@ -24,7 +23,7 @@ namespace TaricSharp.Messages
             EndTime = DateTime.Now.AddMinutes(minutes);
         }
 
-        protected override async Task UpdateMessage()
+        public override async Task UpdateMessage()
         {
             await Message.ModifyAsync(m =>
             {
@@ -49,22 +48,12 @@ namespace TaricSharp.Messages
             });
         }
 
-        private string UsersToString()
-        {
-            return _users.Count > 0
-                ? _users.Aggregate("",
-                    (current, user) =>
-                        current + Environment.NewLine +
-                        user.Value)
-                : "--None--";
-        }
-
         private EmbedBuilder MessageEmbedBuilder()
         {
             var embed = new EmbedBuilder()
                 .WithTitle($"⌛ Timer")
                 .AddField("Remaining:", $"{Math.Round((EndTime - DateTime.Now).TotalMinutes)} minutes.")
-                .AddField("Committed:", "```" + UsersToString() + "```", true)
+                .AddField("Committed:", $"```{UsersToString()}```", true)
                 .WithColor(IsLocked ? Color.DarkBlue : Color.DarkGreen);
 
             return embed;
@@ -74,7 +63,7 @@ namespace TaricSharp.Messages
         {
             return new EmbedBuilder()
                 .WithTitle($"Timer finished")
-                .AddField("Committed:", "```" + UsersToString() + "```", true)
+                .AddField("Committed:", $"```{UsersToString()}```", true)
                 .WithColor(Color.DarkRed);
         }
     }
