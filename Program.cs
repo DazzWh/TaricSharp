@@ -4,6 +4,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
+using MMALSharp;
 using TaricSharp.Services;
 using TaricSharp.Services.ReadyCheck;
 
@@ -34,6 +35,7 @@ namespace TaricSharp
             }))
             .AddSingleton<LoggingService>()
             .AddSingleton<ReadyCheckService>()
+            .AddSingleton<CameraService>()
             .AddSingleton<CommandHandler>()
             .AddSingleton<PinService>()
             .AddSingleton<Random>()
