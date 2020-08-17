@@ -38,7 +38,7 @@ namespace TaricSharp.Services
         {
             _logging.Initialize();
             _readyCheckService.Initialize();
-            _cameraService.Initialize();
+            //_cameraService.Initialize();
 
             await _client.LoginAsync(TokenType.Bot,
                 Environment.GetEnvironmentVariable("DiscordToken"));

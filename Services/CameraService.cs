@@ -33,6 +33,8 @@ namespace TaricSharp.Services
 
         public async Task TakePicture(SocketCommandContext context)
         {
+            await context.Channel.SendMessageAsync("🙈 I have seen enough...");
+            return;
 
             await _semaphoreSlim.WaitAsync();
             try
