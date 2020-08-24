@@ -17,17 +17,10 @@ namespace TaricSharp.Modules
         private readonly Color _gameRoleColor = new Color(0x8787c5);
 
         private async Task<RestRole> CreateRole(
-            string name, 
-            Color color, 
+            string name,
+            Color color,
             bool mentionable = false)
-        {
-            var role = Context.Guild.CreateRoleAsync(name, GuildPermissions.None, color);
-            
-            if (role.Result != null && mentionable)
-                await role.Result.ModifyAsync(r => r.Mentionable = true);
-            
-            return await role;
-        }
+            => await Context.Guild.CreateRoleAsync(name, GuildPermissions.None, color, false, mentionable);
 
         private async Task AddRoleToUser(Task<RestRole> role)
         {
@@ -38,7 +31,7 @@ namespace TaricSharp.Modules
         }
 
         private async Task<RestRole> CreateAndAddRoleToUser(
-            string gameName, 
+            string gameName,
             Color roleColor,
             bool mentionable = false)
         {
