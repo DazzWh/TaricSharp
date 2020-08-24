@@ -20,11 +20,14 @@ namespace TaricSharp.Services
         private Timer _timer;
         private readonly Emoji _acceptEmoji = new Emoji("✔️");
         private readonly DiscordSocketClient _client;
+        private readonly PersistentDataService _dataService;
 
         public TimerEndService(
-            DiscordSocketClient client)
+            DiscordSocketClient client,
+            PersistentDataService dataService)
         {
             _client = client;
+            _dataService = dataService;
             _endMessages = new HashSet<TimerEndMessage>();
         }
 
@@ -96,6 +99,11 @@ namespace TaricSharp.Services
             foreach (var msg in finishedEndMessages)
             {
                 await msg.FinishMessage();
+
+                foreach (var user in msg.Users)
+                {
+                    await _dataService.IncrementLateUser(user.Key, msg.GuildID);
+                }
                 //TODO: Log who was late on a scoreboard.
                 _endMessages.Remove(msg);
             }

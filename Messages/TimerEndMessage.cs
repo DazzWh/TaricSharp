@@ -11,14 +11,17 @@ namespace TaricSharp.Messages
     {
 
         public readonly DateTime EndTime;
+        public ulong GuildID => (ulong) _message.Reference.GuildId;
 
         private readonly Dictionary<ulong, string> _onTimeUsers;
+        private readonly RestUserMessage _message;
 
         public TimerEndMessage(
             RestUserMessage message,
             int secondsTillEnd
             ) : base(message)
         {
+            _message = message;
             EndTime = DateTime.Now.AddSeconds(secondsTillEnd);
             _onTimeUsers = new Dictionary<ulong, string>();
         }
@@ -47,6 +50,7 @@ namespace TaricSharp.Messages
                 m.Content = "";
                 m.Embed = FinishedMessageEmbedBuilder().Build();
             });
+            await Message.RemoveAllReactionsAsync();
         }
 
         private EmbedBuilder MessageEmbedBuilder()
