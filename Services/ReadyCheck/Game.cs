@@ -12,5 +12,7 @@
         Pavlov,
         KillingFloor,
         JackBox,
+        AmongUs,
+        Foxhole,
     }
 }

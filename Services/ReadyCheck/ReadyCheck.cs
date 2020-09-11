@@ -175,6 +175,18 @@ namespace TaricSharp.Services.ReadyCheck
                         .WithColor(Color.LightOrange)
                         .WithThumbnailUrl("https://steamcdn-a.akamaihd.net/steam/apps/331670/header.jpg");
                     break;
+                
+                case Game.AmongUs:
+                    embed.WithTitle($"{embed.Title} for Among Us!")
+                        .WithColor(Color.DarkBlue)
+                        .WithThumbnailUrl("https://cdn.cloudflare.steamstatic.com/steam/apps/945360/header.jpg");
+                    break;
+                
+                case Game.Foxhole:
+                    embed.WithTitle($"{embed.Title} for Foxhole!")
+                        .WithColor(Color.DarkGreen)
+                        .WithThumbnailUrl("https://cdn.cloudflare.steamstatic.com/steam/apps/505460/header_alt_assets_3.jpg");
+                    break;
 
                 case Game.None:
                     embed.WithTitle($"{embed.Title}!");

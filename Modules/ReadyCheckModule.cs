@@ -36,7 +36,8 @@ namespace TaricSharp.Modules
         {
             await _readyCheckService.CreateReadyCheck(Context, GameFromMentions(Context.Message.MentionedRoles));
         }
-
+        
+        // TODO: This is too big to be an enum now. Refactor to a better solution
         private static Game GameFromMentions(
             IEnumerable<SocketRole> messageMentionedRoles)
         {
@@ -59,6 +60,12 @@ namespace TaricSharp.Modules
 
                 if (role.Name.Equals("Jackbox"))
                     return Game.JackBox;
+
+                if (role.Name.Equals("AmongUs"))
+                    return Game.AmongUs;
+                
+                if (role.Name.Equals("Foxhole"))
+                    return Game.Foxhole;
             }
 
             return Game.None;
