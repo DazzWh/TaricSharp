@@ -11,7 +11,7 @@ namespace TaricSharp.Services.Games
     {
         public event Func<LogMessage, Task> Log;
         private List<GameInfo> _games;
-        
+
         public void Initialize()
         {
             _games = GetGameInfo();
@@ -28,7 +28,7 @@ namespace TaricSharp.Services.Games
                     return game;
                 }
             }
-            
+
             return GameInfo.None;
         }
 

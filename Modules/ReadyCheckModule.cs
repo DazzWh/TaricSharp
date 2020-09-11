@@ -27,7 +27,7 @@ namespace TaricSharp.Modules
         [Remarks("Searches message for GameRole mentions to set the ReadyCheck theme")]
         public async Task InitiateReadyCheck()
         {
-            await _readyCheckService.CreateReadyCheck(Context, GameInfo.None);
+            await _readyCheckService.CreateReadyCheck(Context);
         }
 
         [Command("ready")]
@@ -35,8 +35,7 @@ namespace TaricSharp.Modules
         public async Task InitiateReadyCheck(
             [Remainder] string text)
         {
-            var gameInfo = _gameService.GetGameFromMentions(Context.Message.MentionedRoles);
-            await _readyCheckService.CreateReadyCheck(Context, gameInfo);
+            await _readyCheckService.CreateReadyCheck(Context);
         }
         
     }

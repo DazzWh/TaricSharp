@@ -139,7 +139,6 @@ namespace TaricSharp.Services.ReadyCheck
             if (_gameData != GameInfo.None)
             {
                 embed.WithTitle($"{embed.Title} for {_gameData.GameName}!")
-                    //.WithUrl("steam://run/774861")
                     .WithColor(_gameData.Color)
                     .WithThumbnailUrl($"{_gameData.ImageUrl}");
             }

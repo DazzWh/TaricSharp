@@ -12,6 +12,7 @@ namespace TaricSharp.Services.ReadyCheck
     public class ReadyCheckService
     {
         private readonly DiscordSocketClient _client;
+        private readonly GameService _gameService;
         private readonly HashSet<ReadyCheck> _readyChecks;
         private const int ReadyCheckTimeLimitHours = 24; // How many hours a ready check lasts before being deleted
 
@@ -21,9 +22,11 @@ namespace TaricSharp.Services.ReadyCheck
         private readonly Emoji _finishEmoji = new Emoji("🈵"); // "No Vacancy" in Japanese
 
         public ReadyCheckService(
-            DiscordSocketClient client)
+            DiscordSocketClient client,
+            GameService gameService)
         {
             _client = client;
+            _gameService = gameService;
             _readyChecks = new HashSet<ReadyCheck>();
         }
 
@@ -33,7 +36,7 @@ namespace TaricSharp.Services.ReadyCheck
         }
 
         public async Task CreateReadyCheck(
-            SocketCommandContext context, GameInfo gameInfo)
+            SocketCommandContext context)
         {
             var msg = await context.Channel.SendMessageAsync("Creating ready check...");
 
@@ -42,7 +45,9 @@ namespace TaricSharp.Services.ReadyCheck
             await msg.AddReactionAsync(_cancelEmoji);
             await msg.AddReactionAsync(_finishEmoji);
 
+            var gameInfo = _gameService.GetGameFromMentions(context.Message.MentionedRoles);
             var readyCheck = new ReadyCheck(msg, context.User, gameInfo);
+            
             _readyChecks.Add(readyCheck);
             await readyCheck.AddReadyUser(context.User);
 
