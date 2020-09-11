@@ -1,7 +1,9 @@
-﻿using Discord;
+﻿using System.Diagnostics.CodeAnalysis;
+using Discord;
 
 namespace TaricSharp.Services.Games
 {
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public class GameInfo
     {
         public readonly string GameName;

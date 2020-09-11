@@ -106,7 +106,7 @@ namespace TaricSharp.Services.ReadyCheck
         {
             var embed = new EmbedBuilder()
                 .WithAuthor(Creator.Username, Creator.GetAvatarUrl())
-                .WithTitle($"Ready check")
+                .WithTitle("Ready check")
                 .AddField("Players:", "```" + ReadyUsersToString() + "```", true)
                 .WithFooter("Use the reactions to ready up, email will send a pm when people are ready." +
                             Environment.NewLine +
