@@ -3,33 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
+using Discord.WebSocket;
 
 namespace TaricSharp.Services.Games
 {
     public class GameService
     {
         public event Func<LogMessage, Task> Log;
-
         private List<GameInfo> _games;
-        private readonly LoggingService _loggingService;
-
-        public GameService(LoggingService loggingService)
-        {
-            _loggingService = loggingService;
-        }
-
+        
         public void Initialize()
         {
             _games = GetGameInfo();
             LogGamesLoaded();
         }
 
-        public GameInfo GetGameFromRole(string roleName)
+        public GameInfo GetGameFromMentions(IEnumerable<SocketRole> mentions)
         {
-            throw new NotImplementedException();
+            foreach (var mention in mentions)
+            {
+                var game = _games.First(g => g.RoleName.Equals(mention.Name));
+                if (game != null)
+                {
+                    return game;
+                }
+            }
+            
+            return GameInfo.None;
         }
 
-        private List<GameInfo> GetGameInfo()
+        private static List<GameInfo> GetGameInfo()
         {
             var games = typeof(GameInfo).GetFields()
                 .Where(f => f.FieldType == typeof(GameInfo))
@@ -43,11 +46,6 @@ namespace TaricSharp.Services.Games
         private void LogGamesLoaded()
         {
             Log?.Invoke(new LogMessage(LogSeverity.Info, nameof(GameService), $"Loaded {_games.Count} GameInfos"));
-        }
-
-        private void LogEmptyGameList()
-        {
-            Log?.Invoke(new LogMessage(LogSeverity.Warning, nameof(GameService), $"No GameInfo found"));
         }
     }
 }

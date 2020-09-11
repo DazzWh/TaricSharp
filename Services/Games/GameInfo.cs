@@ -17,6 +17,12 @@ namespace TaricSharp.Services.Games
             ImageUrl = imageUrl;
         }
         
+        public static readonly GameInfo None = 
+            new GameInfo("",
+                "",
+                Color.Default,
+                "");
+        
         public static readonly GameInfo Dota =
             new GameInfo("Dota",
                 "Dota",

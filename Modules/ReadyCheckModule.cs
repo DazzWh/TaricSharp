@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Discord.Commands;
-using Discord.WebSocket;
 using TaricSharp.Services.Games;
 using TaricSharp.Services.ReadyCheck;
 
@@ -13,11 +11,23 @@ namespace TaricSharp.Modules
     public class ReadyCheckModule : ModuleBase<SocketCommandContext>
     {
         private readonly ReadyCheckService _readyCheckService;
+        private readonly GameService _gameService;
 
         public ReadyCheckModule(
-            ReadyCheckService readyCheckService)
+            ReadyCheckService readyCheckService,
+            GameService gameService)
         {
             _readyCheckService = readyCheckService;
+            _gameService = gameService;
+        }
+        
+        [Command("ready")]
+        [Alias("check")]
+        [Summary("Initiates a ready check")]
+        [Remarks("Searches message for GameRole mentions to set the ReadyCheck theme")]
+        public async Task InitiateReadyCheck()
+        {
+            await _readyCheckService.CreateReadyCheck(Context, GameInfo.None);
         }
 
         [Command("ready")]
@@ -25,14 +35,9 @@ namespace TaricSharp.Modules
         public async Task InitiateReadyCheck(
             [Remainder] string text)
         {
-            await _readyCheckService.CreateReadyCheck(Context, GameFromMentions(Context.Message.MentionedRoles));
+            var gameInfo = _gameService.GetGameFromMentions(Context.Message.MentionedRoles);
+            await _readyCheckService.CreateReadyCheck(Context, gameInfo);
         }
         
-        // TODO: This is too big to be an enum now. Refactor to a better solution
-        private static GameInfo GameFromMentions(
-            IEnumerable<SocketRole> messageMentionedRoles)
-        {
-            return GameInfo.Dota;
-        }
     }
 }
