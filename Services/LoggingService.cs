@@ -19,15 +19,15 @@ namespace TaricSharp.Services
             _client = client;
             _commands = commands;
             _logDirectory = Path.Combine(AppContext.BaseDirectory, "logs");
-            
         }
+        
         public void Initialize()
         {
             _client.Log += OnLogAsync;
             _commands.Log += OnLogAsync;
         }
 
-        private Task OnLogAsync(LogMessage msg)
+        public Task OnLogAsync(LogMessage msg)
         {
             if (!Directory.Exists(_logDirectory))
                 Directory.CreateDirectory(_logDirectory);
