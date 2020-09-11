@@ -22,7 +22,7 @@ namespace TaricSharp.Services.Games
         {
             foreach (var mention in mentions)
             {
-                var game = _games.First(g => g.RoleName.Equals(mention.Name));
+                var game = _games.FirstOrDefault(g => g.RoleName.Equals(mention.Name));
                 if (game != null)
                 {
                     return game;
