@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using TaricSharp.Services.Games;
 
 namespace TaricSharp.Services.ReadyCheck
 {
@@ -32,7 +33,7 @@ namespace TaricSharp.Services.ReadyCheck
         }
 
         public async Task CreateReadyCheck(
-            SocketCommandContext context, Game game)
+            SocketCommandContext context, GameInfo gameInfo)
         {
             var msg = await context.Channel.SendMessageAsync("Creating ready check...");
 
@@ -41,7 +42,7 @@ namespace TaricSharp.Services.ReadyCheck
             await msg.AddReactionAsync(_cancelEmoji);
             await msg.AddReactionAsync(_finishEmoji);
 
-            var readyCheck = new ReadyCheck(msg, context.User, game);
+            var readyCheck = new ReadyCheck(msg, context.User, gameInfo);
             _readyChecks.Add(readyCheck);
             await readyCheck.AddReadyUser(context.User);
 

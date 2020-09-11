@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using TaricSharp.Services.Games;
 using TaricSharp.Services.ReadyCheck;
 
 namespace TaricSharp.Services
@@ -15,6 +16,7 @@ namespace TaricSharp.Services
         private readonly CommandHandler _commands;
         private readonly PinService _pinService;
         private readonly ReadyCheckService _readyCheckService;
+        private readonly GameService _gameService;
         private readonly LoggingService _logging;
 
         public StartupService(
@@ -22,12 +24,14 @@ namespace TaricSharp.Services
             CommandHandler commands,
             PinService pinService,
             ReadyCheckService readyCheckService,
+            GameService gameService,
             LoggingService logging)
         {
             _client = discord;
             _commands = commands;
             _pinService = pinService;
             _readyCheckService = readyCheckService;
+            _gameService = gameService;
             _logging = logging;
         }
 
@@ -35,6 +39,9 @@ namespace TaricSharp.Services
         {
             _logging.Initialize();
             _readyCheckService.Initialize();
+
+            _gameService.Log += _logging.OnLogAsync;
+            _gameService.Initialize();
 
             await _client.LoginAsync(TokenType.Bot,
                 Environment.GetEnvironmentVariable("DiscordToken"));
