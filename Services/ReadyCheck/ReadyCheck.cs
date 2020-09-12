@@ -136,10 +136,10 @@ namespace TaricSharp.Services.ReadyCheck
         private void AddGameSpecificEmbedOptions(
             EmbedBuilder embed)
         {
-            if (_gameData != GameInfo.None)
+            if (_gameData != null) //Todo: Make this work
             {
                 embed.WithTitle($"{embed.Title} for {_gameData.GameName}!")
-                    .WithColor(_gameData.Color)
+                    .WithColor((Color)Enum.Parse(typeof(Color), _gameData.Color))
                     .WithThumbnailUrl($"{_gameData.ImageUrl}");
             }
         }

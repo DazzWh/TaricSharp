@@ -26,4 +26,11 @@
     </Compile>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Games.xml" />
+    <Content Include="Games.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,57 @@
+﻿<games>
+    <gameinfo>
+        <name>Dota</name>
+        <role>Dota</role>
+        <color>DarkRed</color>
+        <image>https://steamcdn-a.akamaihd.net/steam/apps/570/header.jpg</image>
+    </gameinfo>
+
+    <gameinfo>
+        <name>Project Winter</name>
+        <role>Winter</role>
+        <color>Blue</color>
+        <image>https://steamcdn-a.akamaihd.net/steam/apps/774861/header.jpg</image>
+    </gameinfo>
+
+    <gameinfo>
+        <name>Fall Guys</name>
+        <role>Fall Guys</role>
+        <color>Magenta</color>
+        <image>https://steamcdn-a.akamaihd.net/steam/apps/1097150/header.jpg</image>
+    </gameinfo>
+
+    <gameinfo>
+        <name>Pavlov</name>
+        <role>Pavlov</role>
+        <color>DarkGreen</color>
+        <image>https://steamcdn-a.akamaihd.net/steam/apps/555160/header.jpg</image>
+    </gameinfo>
+
+    <gameinfo>
+        <name>Killing Floor</name>
+        <role>KF2</role>
+        <color>Red</color>
+        <image>https://steamcdn-a.akamaihd.net/steam/apps/232090/header.jpg</image>
+    </gameinfo>
+
+    <gameinfo>
+        <name>JackBox</name>
+        <role>Jackbox</role>
+        <color>Blue</color>
+        <image>https://steamcdn-a.akamaihd.net/steam/apps/331670/header.jpg</image>
+    </gameinfo>
+
+    <gameinfo>
+        <name>Among Us</name>
+        <role>AmongUs</role>
+        <color>DarkBlue</color>
+        <image>https://cdn.cloudflare.steamstatic.com/steam/apps/945360/header.jpg</image>
+    </gameinfo>
+
+    <gameinfo>
+        <name>Fox Hole</name>
+        <role>Foxhole</role>
+        <color>DarkGreen</color>
+        <image>https://cdn.cloudflare.steamstatic.com/steam/apps/505460/header_alt_assets_3.jpg</image>
+    </gameinfo>
+</games>

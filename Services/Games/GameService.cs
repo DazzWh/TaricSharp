@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using System.Xml.Serialization;
 using Discord;
 using Discord.WebSocket;
 
@@ -10,6 +13,7 @@ namespace TaricSharp.Services.Games
     public class GameService
     {
         public event Func<LogMessage, Task> Log;
+        private const string GamesListFilePath = "Games.xml";
         private List<GameInfo> _games;
 
         public void Initialize()
@@ -28,19 +32,26 @@ namespace TaricSharp.Services.Games
                     return game;
                 }
             }
-
-            return GameInfo.None;
+            
+            return null; // Return blank
         }
 
-        private static List<GameInfo> GetGameInfo()
+        private List<GameInfo> GetGameInfo()
         {
-            var games = typeof(GameInfo).GetFields()
-                .Where(f => f.FieldType == typeof(GameInfo))
-                .Select(field => (GameInfo) field.GetValue(null))
-                .Where(game => game != null)
-                .ToList();
+            var games = new List<GameInfo>();
 
-            return games;
+            try 
+            {
+                var serializer = new XmlSerializer(typeof(List<GameInfo>), new XmlRootAttribute("games"));
+                var stringReader = new StreamReader(GamesListFilePath);
+                games = (List<GameInfo>) serializer.Deserialize(stringReader);
+            }
+            catch (Exception e)
+            {
+                Log?.Invoke(new LogMessage(LogSeverity.Error, nameof(GameService), e.Message));
+            }
+
+            return games;     
         }
 
         private void LogGamesLoaded()
