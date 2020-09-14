@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using Discord;
 using Discord.WebSocket;
+using TaricSharp.Extensions;
 
 namespace TaricSharp.Modules
 {
@@ -17,13 +18,13 @@ namespace TaricSharp.Modules
         public async Task ColorAsync(
             [Summary("Hexadecimal colour")] string colorStr)
         {
-            if (!ValidHexString(colorStr))
+            if (!colorStr.IsValidHexString())
             {
                 await ReplyAsync($"Invalid hex code {Context.User.Username}");
                 return;
             }
 
-            if (ColorFromHexString(colorStr) == _gameRoleColor)
+            if (colorStr.ToColor() == _gameRoleColor)
             {
                 await ReplyAsync($"Sorry, that colour is reserved for GameRoles {Context.User.Username}");
                 return;
@@ -31,7 +32,7 @@ namespace TaricSharp.Modules
 
             await RemoveNonGameColoredRolesFromUser(Context.User);
 
-            var role = CreateAndAddRoleToUser(Context.User.Username, ColorFromHexString(colorStr));
+            var role = CreateAndAddRoleToUser(Context.User.Username, colorStr.ToColor());
             if (role.Result == null)
             {
                 // TODO: log errors here
@@ -40,24 +41,6 @@ namespace TaricSharp.Modules
 
             await role.Result.ModifyAsync(x =>
                 x.Position = Context.Guild.Roles.Count(r => r.Color == _gameRoleColor) + 1);
-        }
-
-        private static bool ValidHexString(string str)
-        {
-            var rx = new Regex(@"^#?[A-Fa-f0-9]{6}$");
-            return rx.IsMatch(str);
-        }
-
-        private static Color ColorFromHexString(string str)
-        {
-            if (str.StartsWith("#"))
-                str = str.Substring(1);
-
-            return new Color(
-                Convert.ToInt32(str.Substring(0, 2), 16),
-                Convert.ToInt32(str.Substring(2, 2), 16),
-                Convert.ToInt32(str.Substring(4, 2), 16)
-            );
         }
 
         private async Task RemoveNonGameColoredRolesFromUser(SocketUser contextUser)

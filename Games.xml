@@ -2,56 +2,56 @@
     <gameinfo>
         <name>Dota</name>
         <role>Dota</role>
-        <color>DarkRed</color>
+        <color>D44A2C</color>
         <image>https://steamcdn-a.akamaihd.net/steam/apps/570/header.jpg</image>
     </gameinfo>
 
     <gameinfo>
         <name>Project Winter</name>
         <role>Winter</role>
-        <color>Blue</color>
+        <color>26DCE8</color>
         <image>https://steamcdn-a.akamaihd.net/steam/apps/774861/header.jpg</image>
     </gameinfo>
 
     <gameinfo>
         <name>Fall Guys</name>
         <role>Fall Guys</role>
-        <color>Magenta</color>
+        <color>ED20E7</color>
         <image>https://steamcdn-a.akamaihd.net/steam/apps/1097150/header.jpg</image>
     </gameinfo>
 
     <gameinfo>
         <name>Pavlov</name>
         <role>Pavlov</role>
-        <color>DarkGreen</color>
+        <color>83EDA8</color>
         <image>https://steamcdn-a.akamaihd.net/steam/apps/555160/header.jpg</image>
     </gameinfo>
 
     <gameinfo>
         <name>Killing Floor</name>
         <role>KF2</role>
-        <color>Red</color>
+        <color>EE3434</color>
         <image>https://steamcdn-a.akamaihd.net/steam/apps/232090/header.jpg</image>
     </gameinfo>
 
     <gameinfo>
         <name>JackBox</name>
         <role>Jackbox</role>
-        <color>Blue</color>
+        <color>91339E</color>
         <image>https://steamcdn-a.akamaihd.net/steam/apps/331670/header.jpg</image>
     </gameinfo>
 
     <gameinfo>
         <name>Among Us</name>
         <role>AmongUs</role>
-        <color>DarkBlue</color>
+        <color>00FBFF</color>
         <image>https://cdn.cloudflare.steamstatic.com/steam/apps/945360/header.jpg</image>
     </gameinfo>
 
     <gameinfo>
         <name>Fox Hole</name>
         <role>Foxhole</role>
-        <color>DarkGreen</color>
+        <color>38C42A</color>
         <image>https://cdn.cloudflare.steamstatic.com/steam/apps/505460/header_alt_assets_3.jpg</image>
     </gameinfo>
 </games>
