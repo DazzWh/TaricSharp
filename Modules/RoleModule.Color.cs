@@ -24,7 +24,7 @@ namespace TaricSharp.Modules
                 return;
             }
 
-            if (colorStr.ToColor() == _gameRoleColor)
+            if (colorStr.ToColor() == Constants.GameRoleColor)
             {
                 await ReplyAsync($"Sorry, that colour is reserved for GameRoles {Context.User.Username}");
                 return;
@@ -40,7 +40,7 @@ namespace TaricSharp.Modules
             }
 
             await role.Result.ModifyAsync(x =>
-                x.Position = Context.Guild.Roles.Count(r => r.Color == _gameRoleColor) + 1);
+                x.Position = Context.Guild.Roles.Count(r => r.Color == Constants.GameRoleColor) + 1);
         }
 
         private async Task RemoveNonGameColoredRolesFromUser(SocketUser contextUser)
@@ -48,7 +48,7 @@ namespace TaricSharp.Modules
             var colored =
                 Context.Guild.Roles.Where(
                     role =>
-                        role.Color != _gameRoleColor &&
+                        role.Color != Constants.GameRoleColor &&
                         role.Color != Color.Default &&
                         role.Members.Contains(contextUser));
 

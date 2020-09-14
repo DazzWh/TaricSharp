@@ -13,7 +13,6 @@ namespace TaricSharp.Services.Games
     public class GameService
     {
         public event Func<LogMessage, Task> Log;
-        private const string GamesListFilePath = "Games.xml";
         private List<GameInfo> _games;
 
         public void Initialize()
@@ -43,7 +42,7 @@ namespace TaricSharp.Services.Games
             try
             {
                 var serializer = new XmlSerializer(typeof(List<GameInfo>), new XmlRootAttribute("games"));
-                var stringReader = new StreamReader(GamesListFilePath);
+                var stringReader = new StreamReader(Constants.GamesListFilePath);
                 games = (List<GameInfo>) serializer.Deserialize(stringReader);
             }
             catch (Exception e)
@@ -54,33 +53,40 @@ namespace TaricSharp.Services.Games
             return ValidateGameInfo(games);
         }
 
-        private static List<GameInfo> ValidateGameInfo(IReadOnlyCollection<GameInfo> games)
+        private List<GameInfo> ValidateGameInfo(IReadOnlyCollection<GameInfo> games)
         {
             var validGames = new List<GameInfo>(games);
 
             foreach (var game in games)
             {
-                if (!ValidGameName(game) ||
-                    !ValidGameRole(game) ||
-                    !ValidGameImageUrl(game) ||
-                    !ValidGameColor(game))
-                {
-                    validGames.Remove(game);
-                }
+                if (ValidGameInfo(game)) continue;
+                
+                validGames.Remove(game);
+                Log?.Invoke(new LogMessage(
+                    LogSeverity.Error,
+                    nameof(GameService),
+                    $"{game.GameName} GameInfo invalid, not loaded."));
             }
 
             return validGames;
         }
 
+        private static bool ValidGameInfo(GameInfo game)
+        {
+            return ValidGameName(game) &&
+                   ValidGameRole(game) &&
+                   ValidGameColor(game) &&
+                   ValidGameImageUrl(game);
+        }
+
         private static bool ValidGameName(GameInfo game)
         {
-            // Todo: Make a constants file for things like this.
-            return game.GameName.Length > 0 && game.GameName.Length < 100;
+            return game.GameName.Length > 0 && game.GameName.Length < Constants.MaxRoleNameLength;
         }
 
         private static bool ValidGameRole(GameInfo game)
         {
-            return game.RoleName.Length > 0 && game.RoleName.Length < 100;
+            return game.RoleName.Length > 0 && game.RoleName.Length < Constants.MaxRoleNameLength;
         }
         
         private static bool ValidGameColor(GameInfo game)

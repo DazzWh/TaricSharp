@@ -10,7 +10,6 @@ namespace TaricSharp.Services
     /// </summary>
     public class PinService
     {
-        private const int AmountOfPinsNeededToPin = 2;
         private readonly DiscordSocketClient _client;
 
         public PinService(DiscordSocketClient client)
@@ -30,7 +29,8 @@ namespace TaricSharp.Services
         {
             if (reaction.Emote.Name.Equals("📌") &&
                 channel.GetMessageAsync(message.Id).Result is IUserMessage usrMsg &&
-                usrMsg.Reactions.Count(r => r.Key.Name.Equals("📌")) >= AmountOfPinsNeededToPin)
+                usrMsg.Reactions.Count(
+                    r => r.Key.Name.Equals("📌")) >= Constants.AmountOfPinsNeededToPin)
             {
                 await usrMsg.PinAsync();
             }

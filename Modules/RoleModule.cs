@@ -14,8 +14,6 @@ namespace TaricSharp.Modules
     [RequireBotPermission(GuildPermission.SendMessages | GuildPermission.ManageRoles)]
     public partial class RoleModule : ModuleBase<SocketCommandContext>
     {
-        private readonly Color _gameRoleColor = new Color(0x8787c5);
-
         private async Task<RestRole> CreateRole(
             string name,
             Color color,
