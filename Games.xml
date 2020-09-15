@@ -54,4 +54,11 @@
         <color>38C42A</color>
         <image>https://cdn.cloudflare.steamstatic.com/steam/apps/505460/header_alt_assets_3.jpg</image>
     </gameinfo>
+
+    <gameinfo>
+        <name>Interplanetary</name>
+        <role>Interplanetary</role>
+        <color>0A0A0A</color>
+        <image></image>
+    </gameinfo>
 </games>

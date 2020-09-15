@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Rest;
-using TaricSharp.Extensions;
 using TaricSharp.Services.Games;
 using Color = Discord.Color;
 
