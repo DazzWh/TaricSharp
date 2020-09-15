@@ -15,12 +15,12 @@ namespace TaricSharp.Modules
             [Summary("Game name")] [Remainder] string gameName)
         {
             var gameRole = Context.Guild.Roles
-                .FirstOrDefault(role => role.Color == _gameRoleColor &&
+                .FirstOrDefault(role => role.Color == Constants.GameRoleColor &&
                                         role.Name.Equals(gameName, StringComparison.OrdinalIgnoreCase));
 
             if (gameRole == null)
             {
-                await CreateAndAddRoleToUser(gameName, _gameRoleColor, true);
+                await CreateAndAddRoleToUser(gameName, Constants.GameRoleColor, true);
                 await ReplyAsync($"{gameName} role created and added to {Context.User.Username}");
                 return;
             }
@@ -46,7 +46,7 @@ namespace TaricSharp.Modules
         {
             var empty =
                 Context.Guild.Roles.Where(
-                    role => role.Color == _gameRoleColor &&
+                    role => role.Color == Constants.GameRoleColor &&
                             !role.Members.Any());
 
             foreach (var role in empty)

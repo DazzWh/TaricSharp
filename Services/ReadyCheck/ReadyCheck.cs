@@ -13,7 +13,7 @@ namespace TaricSharp.Services.ReadyCheck
     {
         public readonly RestUserMessage ReadyMsg;
         public readonly IUser Creator;
-        private readonly GameInfo _gameData;
+        private readonly GameInfo _gameInfo;
 
         private readonly Dictionary<ulong, string> _readyUsers;
         private readonly Dictionary<ulong, string> _notifyUsers;
@@ -21,11 +21,11 @@ namespace TaricSharp.Services.ReadyCheck
         public ReadyCheck(
             RestUserMessage readyMsg,
             IUser creator,
-            GameInfo gameData)
+            GameInfo gameInfo)
         {
             ReadyMsg = readyMsg;
             Creator = creator;
-            _gameData = gameData;
+            _gameInfo = gameInfo;
 
             _readyUsers = new Dictionary<ulong, string>();
             _notifyUsers = new Dictionary<ulong, string>();
@@ -136,11 +136,11 @@ namespace TaricSharp.Services.ReadyCheck
         private void AddGameSpecificEmbedOptions(
             EmbedBuilder embed)
         {
-            if (_gameData != GameInfo.None)
+            if (_gameInfo != null)
             {
-                embed.WithTitle($"{embed.Title} for {_gameData.GameName}!")
-                    .WithColor(_gameData.Color)
-                    .WithThumbnailUrl($"{_gameData.ImageUrl}");
+                embed.WithTitle($"{embed.Title} for {_gameInfo.GameName}!")
+                    .WithColor(_gameInfo.Color)
+                    .WithThumbnailUrl($"{_gameInfo.ImageUrl}");
             }
         }
     }
