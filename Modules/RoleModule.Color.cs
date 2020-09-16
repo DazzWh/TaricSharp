@@ -1,10 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord;
 using Discord.WebSocket;
+using TaricSharp.Extensions;
 
 namespace TaricSharp.Modules
 {
@@ -17,13 +16,13 @@ namespace TaricSharp.Modules
         public async Task ColorAsync(
             [Summary("Hexadecimal colour")] string colorStr)
         {
-            if (!ValidHexString(colorStr))
+            if (!colorStr.IsValidHexString())
             {
                 await ReplyAsync($"Invalid hex code {Context.User.Username}");
                 return;
             }
 
-            if (ColorFromHexString(colorStr) == _gameRoleColor)
+            if (colorStr.ToColor() == Constants.GameRoleColor)
             {
                 await ReplyAsync($"Sorry, that colour is reserved for GameRoles {Context.User.Username}");
                 return;
@@ -31,33 +30,18 @@ namespace TaricSharp.Modules
 
             await RemoveNonGameColoredRolesFromUser(Context.User);
 
-            var role = CreateAndAddRoleToUser(Context.User.Username, ColorFromHexString(colorStr));
+            var role = CreateAndAddRoleToUser(Context.User.Username, colorStr.ToColor());
             if (role.Result == null)
             {
-                // TODO: log errors here
+                Log?.Invoke(new LogMessage(
+                    LogSeverity.Error, 
+                    nameof(RoleModule), 
+                    $"Could not add colour role to {Context.User.Username}"));
                 return;
             }
 
             await role.Result.ModifyAsync(x =>
-                x.Position = Context.Guild.Roles.Count(r => r.Color == _gameRoleColor) + 1);
-        }
-
-        private static bool ValidHexString(string str)
-        {
-            var rx = new Regex(@"^#?[A-Fa-f0-9]{6}$");
-            return rx.IsMatch(str);
-        }
-
-        private static Color ColorFromHexString(string str)
-        {
-            if (str.StartsWith("#"))
-                str = str.Substring(1);
-
-            return new Color(
-                Convert.ToInt32(str.Substring(0, 2), 16),
-                Convert.ToInt32(str.Substring(2, 2), 16),
-                Convert.ToInt32(str.Substring(4, 2), 16)
-            );
+                x.Position = Context.Guild.Roles.Count(r => r.Color == Constants.GameRoleColor) + 1);
         }
 
         private async Task RemoveNonGameColoredRolesFromUser(SocketUser contextUser)
@@ -65,7 +49,7 @@ namespace TaricSharp.Modules
             var colored =
                 Context.Guild.Roles.Where(
                     role =>
-                        role.Color != _gameRoleColor &&
+                        role.Color != Constants.GameRoleColor &&
                         role.Color != Color.Default &&
                         role.Members.Contains(contextUser));
 

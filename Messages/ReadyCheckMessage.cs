@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Rest;
+using TaricSharp.Services.Games;
 using Color = Discord.Color;
 
 namespace TaricSharp.Messages
@@ -11,7 +12,7 @@ namespace TaricSharp.Messages
     public class ReadyCheckMessage : UserListMessage
     {
         public readonly IUser Creator;
-        private readonly Game _game;
+        private readonly GameInfo _gameInfo;
 
         private readonly Dictionary<ulong, string> _readyUsers;
         private readonly Dictionary<ulong, string> _notifyUsers;
@@ -19,10 +20,10 @@ namespace TaricSharp.Messages
         public ReadyCheckMessage(
             RestUserMessage readyMsg,
             IUser creator,
-            Game game) : base(readyMsg)
+            GameInfo gameInfo) : base(readyMsg)
         {
             Creator = creator;
-            _game = game;
+            _gameInfo = gameInfo;
 
             _readyUsers = new Dictionary<ulong, string>();
             _notifyUsers = new Dictionary<ulong, string>();
@@ -126,53 +127,11 @@ namespace TaricSharp.Messages
         private void AddGameSpecificEmbedOptions(
             EmbedBuilder embed)
         {
-            // TODO: Refactor how games data is handled. This is messy.
-            switch (_game)
+            if (_gameInfo != null)
             {
-                case Game.ProjectWinter:
-                    embed.WithTitle($"{embed.Title} for Project Winter!")
-                        //.WithUrl("steam://run/774861")
-                        .WithColor(Color.Blue)
-                        .WithThumbnailUrl("https://steamcdn-a.akamaihd.net/steam/apps/774861/header.jpg");
-                    break;
-
-                case Game.Dota:
-                    embed.WithTitle($"{embed.Title} for Dota!")
-                        //.WithUrl("steam://run/570")
-                        .WithColor(Color.DarkRed)
-                        .WithThumbnailUrl("https://steamcdn-a.akamaihd.net/steam/apps/570/header.jpg");
-                    break;
-
-                case Game.FallGuys:
-                    embed.WithTitle($"{embed.Title} for Fall Guys!")
-                        .WithColor(Color.Magenta)
-                        .WithThumbnailUrl("https://steamcdn-a.akamaihd.net/steam/apps/1097150/header.jpg");
-                    break;
-
-                case Game.Pavlov:
-                    embed.WithTitle($"{embed.Title} for Pavlov!")
-                        .WithColor(Color.DarkGreen)
-                        .WithThumbnailUrl("https://steamcdn-a.akamaihd.net/steam/apps/555160/header.jpg");
-                    break;
-
-                case Game.KillingFloor:
-                    embed.WithTitle($"{embed.Title} for Killing Floor!")
-                        .WithColor(Color.Red)
-                        .WithThumbnailUrl("https://steamcdn-a.akamaihd.net/steam/apps/232090/header.jpg");
-                    break;
-
-                case Game.JackBox:
-                    embed.WithTitle($"{embed.Title} for JackBox!")
-                        .WithColor(Color.LightOrange)
-                        .WithThumbnailUrl("https://steamcdn-a.akamaihd.net/steam/apps/331670/header.jpg");
-                    break;
-
-                case Game.None:
-                    embed.WithTitle($"{embed.Title}!");
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
+                embed.WithTitle($"{embed.Title} for {_gameInfo.GameName}!")
+                    .WithColor(_gameInfo.Color)
+                    .WithThumbnailUrl($"{_gameInfo.ImageUrl}");
             }
         }
 

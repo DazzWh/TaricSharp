@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using TaricSharp.Services.Games;
+using TaricSharp.Services.ReadyCheck;
 
 namespace TaricSharp.Services
 {
@@ -14,6 +16,7 @@ namespace TaricSharp.Services
         private readonly CommandHandler _commands;
         private readonly PinService _pinService;
         private readonly ReadyCheckService _readyCheckService;
+        private readonly GameService _gameService;
         private readonly TimerStartService _timerStartService;
         private readonly TimerEndService _timerEndService;
         private readonly LoggingService _logging;
@@ -23,6 +26,7 @@ namespace TaricSharp.Services
             CommandHandler commands,
             PinService pinService,
             ReadyCheckService readyCheckService,
+            GameService gameService,
             TimerStartService timerStartService,
             TimerEndService timerEndService,
             LoggingService logging)
@@ -31,6 +35,7 @@ namespace TaricSharp.Services
             _commands = commands;
             _pinService = pinService;
             _readyCheckService = readyCheckService;
+            _gameService = gameService;
             _timerStartService = timerStartService;
             _timerEndService = timerEndService;
             _logging = logging;
@@ -40,6 +45,7 @@ namespace TaricSharp.Services
         {
             _logging.Initialize();
             _readyCheckService.Initialize();
+            _gameService.Initialize();
             _timerStartService.Initialize();
             _timerEndService.Initialize();
 

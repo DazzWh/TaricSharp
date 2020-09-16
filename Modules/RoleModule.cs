@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.Rest;
@@ -14,13 +16,26 @@ namespace TaricSharp.Modules
     [RequireBotPermission(GuildPermission.SendMessages | GuildPermission.ManageRoles)]
     public partial class RoleModule : ModuleBase<SocketCommandContext>
     {
-        private readonly Color _gameRoleColor = new Color(0x8787c5);
+        public event Func<LogMessage, Task> Log;
 
         private async Task<RestRole> CreateRole(
             string name,
             Color color,
             bool mentionable = false)
-            => await Context.Guild.CreateRoleAsync(name, GuildPermissions.None, color, false, mentionable);
+        {
+            try
+            {
+                return await Context.Guild.CreateRoleAsync(name, GuildPermissions.None, color, false, mentionable);
+            }
+            catch(Exception ex)
+            {
+                Log?.Invoke(new LogMessage(
+                    LogSeverity.Error, 
+                    nameof(RoleModule), 
+                    $"{ex.Message}"));
+                return null;
+            }
+        }
 
         private async Task AddRoleToUser(Task<RestRole> role)
         {
@@ -38,7 +53,10 @@ namespace TaricSharp.Modules
             var role = CreateRole(gameName, roleColor, mentionable);
             if (role.Result == null)
             {
-                // TODO: log errors here
+                Log?.Invoke(new LogMessage(
+                    LogSeverity.Error, 
+                    nameof(RoleModule), 
+                    $"{gameName} role not added to {Context.User.Username}"));
                 return null;
             }
 

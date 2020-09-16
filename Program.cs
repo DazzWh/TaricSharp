@@ -5,6 +5,8 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using TaricSharp.Services;
+using TaricSharp.Services.Games;
+using TaricSharp.Services.ReadyCheck;
 
 namespace TaricSharp
 {
@@ -25,6 +27,7 @@ namespace TaricSharp
                 LogLevel = LogSeverity.Verbose,
                 MessageCacheSize = 1000 
             }))
+
             .AddSingleton(new CommandService(new CommandServiceConfig
             {
                 LogLevel = LogSeverity.Verbose,
@@ -32,6 +35,7 @@ namespace TaricSharp
             }))
             .AddSingleton<LoggingService>()
             .AddSingleton<ReadyCheckService>()
+            .AddSingleton<GameService>()
             .AddSingleton<TimerStartService>()
             .AddSingleton<TimerEndService>()
             .AddSingleton<CommandHandler>()
