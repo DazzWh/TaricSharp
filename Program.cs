@@ -6,7 +6,6 @@ using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using TaricSharp.Services;
 using TaricSharp.Services.Games;
-using TaricSharp.Services.ReadyCheck;
 
 namespace TaricSharp
 {

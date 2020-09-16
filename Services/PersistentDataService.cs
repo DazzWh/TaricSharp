@@ -1,8 +1,6 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using System.Xml;
-using System.Xml.Linq;
-using Discord;
 
 namespace TaricSharp.Services
 {

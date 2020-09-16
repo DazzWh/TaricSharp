@@ -37,8 +37,7 @@ namespace TaricSharp.Services
         }
 
         public async Task CreateReadyCheck(
-            SocketCommandContext context,
-            Game game)
+            SocketCommandContext context)
         {
             var msg = await context.Channel.SendMessageAsync("Creating ready check...");
 

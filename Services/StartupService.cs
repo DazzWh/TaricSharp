@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using TaricSharp.Services.Games;
-using TaricSharp.Services.ReadyCheck;
 
 namespace TaricSharp.Services
 {

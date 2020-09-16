@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
+using TaricSharp.Services;
 using TaricSharp.Services.Games;
-using TaricSharp.Services.ReadyCheck;
 
 namespace TaricSharp.Modules
 {
