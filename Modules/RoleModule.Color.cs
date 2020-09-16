@@ -33,7 +33,10 @@ namespace TaricSharp.Modules
             var role = CreateAndAddRoleToUser(Context.User.Username, colorStr.ToColor());
             if (role.Result == null)
             {
-                // TODO: log errors here
+                Log?.Invoke(new LogMessage(
+                    LogSeverity.Error, 
+                    nameof(RoleModule), 
+                    $"Could not add colour role to {Context.User.Username}"));
                 return;
             }
 

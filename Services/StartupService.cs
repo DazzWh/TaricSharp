@@ -39,8 +39,6 @@ namespace TaricSharp.Services
         {
             _logging.Initialize();
             _readyCheckService.Initialize();
-
-            _gameService.Log += _logging.OnLogAsync;
             _gameService.Initialize();
 
             await _client.LoginAsync(TokenType.Bot,
