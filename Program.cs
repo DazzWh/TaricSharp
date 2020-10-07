@@ -4,8 +4,10 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
+using TaricSharp.Modules;
 using TaricSharp.Services;
 using TaricSharp.Services.Games;
+using TaricSharp.Services.PersistantData;
 
 namespace TaricSharp
 {
@@ -33,6 +35,7 @@ namespace TaricSharp
                 DefaultRunMode = RunMode.Async
             }))
             .AddSingleton<LoggingService>()
+            .AddSingleton<LateUserDataService>()
             .AddSingleton<ReadyCheckService>()
             .AddSingleton<GameService>()
             .AddSingleton<TimerStartService>()

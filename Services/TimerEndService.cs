@@ -7,6 +7,7 @@ using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
 using TaricSharp.Messages;
+using TaricSharp.Services.PersistantData;
 
 namespace TaricSharp.Services
 {
@@ -20,11 +21,11 @@ namespace TaricSharp.Services
         private Timer _timer;
         private readonly Emoji _acceptEmoji = new Emoji("✔️");
         private readonly DiscordSocketClient _client;
-        private readonly PersistentDataService _dataService;
+        private readonly LateUserDataService _dataService;
 
         public TimerEndService(
             DiscordSocketClient client,
-            PersistentDataService dataService)
+            LateUserDataService dataService)
         {
             _client = client;
             _dataService = dataService;
