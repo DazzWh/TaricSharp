@@ -54,7 +54,7 @@ namespace TaricSharp.Services
             _lateUserDataService.Initialise();
 
             await _client.LoginAsync(TokenType.Bot,
-                Environment.GetEnvironmentVariable("DiscordToken"));
+                Environment.GetEnvironmentVariable("DiscordTokenTest"));
             await _client.StartAsync();
 
             await _commands.Initialize();
