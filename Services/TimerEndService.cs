@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
+using MoreLinq;
 using TaricSharp.Messages;
 using TaricSharp.Services.PersistantData;
 
@@ -13,8 +14,9 @@ namespace TaricSharp.Services
 {
     public class TimerEndService
     {
-        private const int CheckTimeInSeconds = 20; // How often we update messages
-        private const int HereTimeInSeconds = 60; // How long a user has to say they're here
+        //Todo: Revert these timers
+        private const int CheckTimeInSeconds = 5; // How often we update messages
+        private const int HereTimeInSeconds = 5; // How long a user has to say they're here
 
         private readonly HashSet<TimerEndMessage> _endMessages;
 
@@ -22,13 +24,16 @@ namespace TaricSharp.Services
         private readonly Emoji _acceptEmoji = new Emoji("✔️");
         private readonly DiscordSocketClient _client;
         private readonly LateUserDataService _dataService;
+        private readonly LoggingService _loggingService;
 
         public TimerEndService(
             DiscordSocketClient client,
-            LateUserDataService dataService)
+            LateUserDataService dataService,
+            LoggingService loggingService)
         {
             _client = client;
             _dataService = dataService;
+            _loggingService = loggingService;
             _endMessages = new HashSet<TimerEndMessage>();
         }
 
@@ -48,11 +53,21 @@ namespace TaricSharp.Services
         /// <param name="timerStart">The Timer Message that has ended to create the EndTimerMessage from.</param>
         public async Task CreateEndTimerMessage(TimerStartMessage timerStart)
         {
-
             var msg = (RestUserMessage) await timerStart.Message.Channel.SendMessageAsync("Creating timer complete message...");
             await msg.AddReactionAsync(_acceptEmoji);
-
-            var timerEndMessage = new TimerEndMessage(msg, HereTimeInSeconds);
+            
+            var channel = msg.Channel as SocketGuildChannel;
+            if (channel == null)
+            {
+                await _loggingService.Log(new LogMessage(
+                    LogSeverity.Error, 
+                    nameof(TimerEndService), 
+                    $"Failed to cast TimerStartMessage channel to SocketGuildChannel"));
+                await msg.ModifyAsync(m => m.Content = "Failed to create TimerEndMessage");
+                return;
+            }
+            
+            var timerEndMessage = new TimerEndMessage(msg, HereTimeInSeconds, channel.Guild.Id);
             foreach (var (id, name) in timerStart.Users)
             {
                 await timerEndMessage.AddUser(id, name);
@@ -74,9 +89,10 @@ namespace TaricSharp.Services
                 return;
 
             var msg = await channel.GetMessageAsync(message.Id);
-
+            if (msg == null)
+                return;
+            
             var endMessage = _endMessages.FirstOrDefault(m => m.Id == msg.Id);
-
             if (endMessage == null)
                 return;
 
@@ -94,7 +110,7 @@ namespace TaricSharp.Services
         {
             var finishedEndMessages =
                 _endMessages
-                    .Where(msg => msg.Message.Timestamp.AddSeconds(HereTimeInSeconds) < DateTime.Now)
+                    .Where(msg => msg.EndTime.AddSeconds(HereTimeInSeconds) < DateTime.Now)
                     .ToArray();
 
             foreach (var msg in finishedEndMessages)
@@ -103,11 +119,11 @@ namespace TaricSharp.Services
 
                 foreach (var user in msg.Users)
                 {
-                    await _dataService.IncrementLateUser(user.Key, msg.GuildID);
+                    await _dataService.IncrementLateUser(user.Key, msg.GuildId);
                 }
-                //TODO: Log who was late on a scoreboard.
-                _endMessages.Remove(msg);
             }
+
+            _endMessages.RemoveWhere(msg => msg.Finished);
         }
     }
 }

@@ -85,7 +85,8 @@ namespace TaricSharp.Services
             {
                 if (reaction.Emote.Equals(_acceptEmoji))
                     await timerMessage.AddUser(reaction.User.Value);
-
+                
+                // Todo: remove cancel emoji, and the "check halfway done" thing. Just if they're in they're in.
                 if (reaction.Emote.Equals(_cancelEmoji))
                     await timerMessage.RemoveUser(reaction.User.Value);
             }
@@ -138,9 +139,6 @@ namespace TaricSharp.Services
                 await msg.FinishMessage();
                 _timerMessages.Remove(msg);
             }
-
-            // TODO: remove this if no issues
-            //_timerMessages.RemoveWhere(msg => finishedTimers.Contains(msg));
         }
     }
 }

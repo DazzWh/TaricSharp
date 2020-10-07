@@ -19,7 +19,7 @@ namespace TaricSharp.Messages
             int minutes) : base(message)
         {
             StartTime = DateTime.Now;
-            EndTime = DateTime.Now.AddMinutes(minutes);
+            EndTime = DateTime.Now.AddSeconds(minutes); //Todo: make this mins for real thing
         }
 
         public override async Task UpdateMessage()

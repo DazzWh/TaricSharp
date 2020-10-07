@@ -3,24 +3,25 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Rest;
+using Discord.WebSocket;
 
 namespace TaricSharp.Messages
 {
     public class TimerEndMessage : UserListMessage
     {
-
         public readonly DateTime EndTime;
-        public ulong GuildID => (ulong) _message.Reference.GuildId;
+        public readonly ulong GuildId;
+        public bool Finished = false;
 
         private readonly Dictionary<ulong, string> _onTimeUsers;
-        private readonly RestUserMessage _message;
 
         public TimerEndMessage(
             RestUserMessage message,
-            int secondsTillEnd
+            int secondsTillEnd,
+            ulong guildId
             ) : base(message)
         {
-            _message = message;
+            GuildId = guildId;
             EndTime = DateTime.Now.AddSeconds(secondsTillEnd);
             _onTimeUsers = new Dictionary<ulong, string>();
         }
@@ -50,6 +51,8 @@ namespace TaricSharp.Messages
                 m.Embed = FinishedMessageEmbedBuilder().Build();
             });
             await Message.RemoveAllReactionsAsync();
+
+            Finished = true;
         }
 
         private EmbedBuilder MessageEmbedBuilder()

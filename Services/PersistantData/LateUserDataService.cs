@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
@@ -17,33 +18,30 @@ namespace TaricSharp.Services.PersistantData
     public class LateUserDataService
     {
         private readonly LoggingService _loggingService;
-        // Todo: Async key solution, check camera branch for example
+        private static readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
 
-        private Dictionary<ulong, List<LateUser>> _data = new Dictionary<ulong, List<LateUser>>();
+        private readonly Dictionary<ulong, List<LateUser>> _data = new Dictionary<ulong, List<LateUser>>();
 
         public LateUserDataService(LoggingService loggingService)
         {
             _loggingService = loggingService;
         }
 
-        public void Initialise()
+        public async Task Initialise()
         {
             if (File.Exists(Constants.LateUsersFilePath))
             {
-                LoadData();
+                await LoadData();
             }
             else
             {
-                _data = new Dictionary<ulong, List<LateUser>>()
-                {
-                    { 0, new List<LateUser>() }
-                };
-                SaveData();
+                await SaveData();
             }
         }
 
-        private void LoadData()
+        private async Task LoadData()
         {
+            await SemaphoreSlim.WaitAsync();
             _data.Clear();
 
             try
@@ -63,23 +61,28 @@ namespace TaricSharp.Services.PersistantData
             }
             catch (Exception e)
             {
-                _loggingService.Log(
+                await _loggingService.Log(
                     new LogMessage(
-                        LogSeverity.Error, 
-                        nameof(LateUserDataService), 
+                        LogSeverity.Error,
+                        nameof(LateUserDataService),
                         e.Message));
+            }
+            finally
+            {
+                SemaphoreSlim.Release();
             }
         }
 
-        private void SaveData()
+        private async Task SaveData()
         {
+            await SemaphoreSlim.WaitAsync();
             try
             {
                 var lateGuilds = new List<LateGuild>(_data.Count);
                 lateGuilds.AddRange(
                     _data.Keys.Select(key => new LateGuild {Id = key, LateUsers = _data[key]})
-                    );
-                
+                );
+
                 var writer = new StreamWriter(Constants.LateUsersFilePath);
                 var serializer = new XmlSerializer(typeof(List<LateGuild>));
                 serializer.Serialize(writer, lateGuilds);
@@ -87,11 +90,15 @@ namespace TaricSharp.Services.PersistantData
             }
             catch (Exception e)
             {
-                _loggingService.Log(
+                await _loggingService.Log(
                     new LogMessage(
-                        LogSeverity.Error, 
-                        nameof(LateUserDataService), 
+                        LogSeverity.Error,
+                        nameof(LateUserDataService),
                         e.Message));
+            }
+            finally
+            {
+                SemaphoreSlim.Release();
             }
         }
 
@@ -103,11 +110,19 @@ namespace TaricSharp.Services.PersistantData
         public async Task IncrementLateUser(ulong userId, ulong guildId)
         {
             var usersInGuild = _data.GetOrCreate(guildId);
-            var user = usersInGuild.FirstOrDefault(u => u.Id == userId) ?? new LateUser(userId);
+            var user = usersInGuild.FirstOrDefault(u => u.Id == userId);
+
+            if (user == null)
+            {
+                user = new LateUser(userId);
+                _data[guildId].Add(user);
+            }
             
             user.Count++;
             
-            SaveData();
+            await SaveData();
         }
+        
+        //Todo: Increment multiple users with only one SaveData call
     }
 }

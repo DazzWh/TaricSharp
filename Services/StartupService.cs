@@ -51,10 +51,10 @@ namespace TaricSharp.Services
             _gameService.Initialize();
             _timerStartService.Initialize();
             _timerEndService.Initialize();
-            _lateUserDataService.Initialise();
+            await _lateUserDataService.Initialise();
 
             await _client.LoginAsync(TokenType.Bot,
-                Environment.GetEnvironmentVariable("DiscordTokenTest"));
+                Environment.GetEnvironmentVariable("DiscordToken"));
             await _client.StartAsync();
 
             await _commands.Initialize();
