@@ -69,6 +69,7 @@ namespace TaricSharp.Messages
 
         private EmbedBuilder FinishedMessageEmbedBuilder()
         {
+            // Todo: Make this show the late count on the message, inject LateUserDataService
             return new EmbedBuilder()
                 .WithTitle("Late Report")
                 .AddField("Late: ", "```" + UsersToString() + "```", true)

@@ -134,7 +134,6 @@ namespace TaricSharp.Services
             foreach (var msg in finishedTimers)
             {
                 // Create an end message
-                var endMsg = (RestUserMessage) await msg.Channel.SendMessageAsync("Ending timer...");
                 await _timerEndService.CreateEndTimerMessage(msg);
                 await msg.FinishMessage();
                 _timerMessages.Remove(msg);
