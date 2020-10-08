@@ -40,11 +40,14 @@ namespace TaricSharp.Modules
         [Summary("Shows how many times users have been late")]
         public async Task LateScoreboard()
         {
+            var users = _lateUserDataService.GetUsersFromGuild(Context.Guild.Id);
+            
+            
             var scores = 
-                (from userData in _lateUserDataService.GetUsersFromGuild(Context.Guild.Id)
+                (from userData in users
                     .Where(u => Context.Guild.GetUser(u.Id) != null) 
                     let user = Context.Guild.GetUser(userData.Id) 
-                    select new Tuple<string, uint>(user.Username, userData.Count)).ToList();
+                    select new Tuple<string, LateUser>(user.Username, userData)).ToList();
             
             var embed = new EmbedBuilder()
                 .AddField("⌛ Late users", $"```{ScoresFormatted(scores)}```", true)
@@ -53,15 +56,16 @@ namespace TaricSharp.Modules
             await Context.Channel.SendMessageAsync(null, false, embed.Build());
         }
 
-        private string ScoresFormatted(List<Tuple<string, uint>> scores)
+        private static string ScoresFormatted(IReadOnlyCollection<Tuple<string, LateUser>> scores)
         {
             if (scores.Count == 0) 
                 return "-- No Data For Server --";
 
             var sb = new StringBuilder();
+            sb.Append("Name : OnTimeCount : LateCount");
             scores.ToList()
-                .ForEach(score=> sb.Append($"{score.Item1} : {score.Item2}\n"));
-            return sb.ToString().Trim('\n');
+                .ForEach(score=> sb.AppendLine($"{score.Item1} : {score.Item2.OnTimeCount} : {score.Item2.LateCount}"));
+            return sb.ToString();
         }
     }
 }

@@ -100,7 +100,7 @@ namespace TaricSharp.Services.Timer.Data
             }
         }
 
-        private async Task IncrementLateUser(ulong userId, ulong guildId)
+        private async Task IncrementUserData(ulong userId, ulong guildId, bool late)
         {
             await SemaphoreSlim.WaitAsync();
             
@@ -113,15 +113,34 @@ namespace TaricSharp.Services.Timer.Data
                 _data[guildId].Add(user);
             }
 
-            user.Count++;
+            if (late)
+            {
+                user.LateCount++; 
+            }
+            else
+            {
+                user.OnTimeCount++;
+            }
+            
             SemaphoreSlim.Release();
         }
+        
+        public async Task IncrementOnTimeUsers(IEnumerable<ulong> userIds, ulong guildId)
+        {
+            foreach (var id in userIds)
+            {
+                await IncrementUserData(id, guildId, false);
+            }
+
+            await SaveData();
+        }
+        
 
         public async Task IncrementLateUsers(IEnumerable<ulong> userIds, ulong guildId)
         {
             foreach (var id in userIds)
             {
-                await IncrementLateUser(id, guildId);
+                await IncrementUserData(id, guildId, true);
             }
 
             await SaveData();
@@ -130,7 +149,7 @@ namespace TaricSharp.Services.Timer.Data
         public IEnumerable<LateUser> GetUsersFromGuild(ulong guildId)
         {
             _data.TryGetValue(guildId, out var users);
-            return users;
+            return users ?? new List<LateUser>();
         }
     }
 }

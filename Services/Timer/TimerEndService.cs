@@ -48,7 +48,8 @@ namespace TaricSharp.Services.Timer
         {
             if(msg is TimerEndMessage endMessage)
             {
-                await _dataService.IncrementLateUsers(endMessage.Users.Keys, endMessage.GuildId); 
+                await _dataService.IncrementLateUsers(endMessage.Users.Keys, endMessage.GuildId);
+                await _dataService.IncrementOnTimeUsers(endMessage.OnTimeUsers.Keys, endMessage.GuildId);
             }
         }
     }

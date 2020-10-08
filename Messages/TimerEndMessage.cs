@@ -11,8 +11,7 @@ namespace TaricSharp.Messages
     public class TimerEndMessage : TimerMessage
     {
         public readonly ulong GuildId;
-
-        private readonly Dictionary<ulong, string> _onTimeUsers;
+        public readonly Dictionary<ulong, string> OnTimeUsers;
 
         public TimerEndMessage(
             RestUserMessage message,
@@ -22,7 +21,7 @@ namespace TaricSharp.Messages
             : base(message, minutes)
         {
             GuildId = guildId;
-            _onTimeUsers = new Dictionary<ulong, string>();
+            OnTimeUsers = new Dictionary<ulong, string>();
             initialUsers.ForEach(u => Users.TryAdd(u.Key, u.Value));
         }
 
@@ -32,7 +31,7 @@ namespace TaricSharp.Messages
             if (!Users.ContainsKey(user.Id))
                 return;
 
-            _onTimeUsers.TryAdd(user.Id, user.Username);
+            OnTimeUsers.TryAdd(user.Id, user.Username);
             Users.Remove(user.Id);
             await UpdateMessage();
         }
@@ -42,7 +41,7 @@ namespace TaricSharp.Messages
             var embed = new EmbedBuilder()
                 .WithTitle($"⌛ Who's here?")
                 .AddField("Time Remaining:", $"{Math.Round((EndTime - DateTime.Now).TotalSeconds)} seconds.")
-                .AddField("Here:", $"```{UsersToString(_onTimeUsers)}```", true)
+                .AddField("Here:", $"```{UsersToString(OnTimeUsers)}```", true)
                 .AddField("Should be here:", $"```{UsersToString()}```")
                 .WithColor(Color.DarkOrange);
 

@@ -6,14 +6,16 @@ namespace TaricSharp.Services.Timer.Data
     public class LateUser
     {
         [XmlElement("id")] public ulong Id;    // UserID
-        [XmlElement("count")] public uint Count; // Amount of times late
+        [XmlElement("late")] public uint LateCount; // Amount of times late
+        [XmlElement("ontime")] public uint OnTimeCount; // Amount of times on time
 
         public LateUser() { }
         
         public LateUser(ulong id)
         {
             Id = id;
-            Count = 0;
+            LateCount = 0;
+            OnTimeCount = 0;
         }
     }
 }
