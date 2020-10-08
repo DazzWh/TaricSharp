@@ -65,13 +65,9 @@ namespace TaricSharp.Services.Timer
                 return;
             }
             
-            var timerEndMessage = new TimerEndMessage(msg, HereTimeInSeconds, channel.Guild.Id);
-            foreach (var (id, name) in timerStart.Users)
-            {
-                await timerEndMessage.AddUser(id, name);
-            }
-
+            var timerEndMessage = new TimerEndMessage(msg, HereTimeInSeconds, timerStart.Users, channel.Guild.Id);
             _endMessages.Add(timerEndMessage);
+            await timerEndMessage.UpdateMessage();
         }
 
         /// <summary>

@@ -17,12 +17,18 @@ namespace TaricSharp.Messages
         public TimerEndMessage(
             RestUserMessage message,
             int secondsTillEnd,
+            Dictionary<ulong, string> initialUsers,
             ulong guildId
             ) : base(message)
         {
             GuildId = guildId;
             EndTime = DateTime.Now.AddSeconds(secondsTillEnd);
             _onTimeUsers = new Dictionary<ulong, string>();
+
+            foreach (var (key, value) in initialUsers)
+            {
+                Users.TryAdd(key, value);
+            }
         }
 
         public override async Task UpdateMessage()
