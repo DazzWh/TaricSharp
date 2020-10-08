@@ -14,10 +14,15 @@ namespace TaricSharp.Messages
 
         protected override EmbedBuilder CountdownMessageEmbedBuilder()
         {
+            var timeRemaining = (EndTime - DateTime.Now);
+            var remainingMessage = timeRemaining.TotalMinutes > 1 ? 
+                $"{Math.Round(timeRemaining.TotalMinutes)} minutes." : 
+                $"{Math.Round(timeRemaining.TotalSeconds)} seconds.";
+
             var embed = new EmbedBuilder()
                 .WithTitle($"⌛ Timer")
-                .AddField("Remaining:", $"{Math.Round((EndTime - DateTime.Now).TotalMinutes)} minutes.")
-                .AddField("Committed:", $"```{UsersToString()}```", true)
+                .AddField("Remaining:", remainingMessage)
+                .AddField("Users:", $"```{UsersToString()}```", true)
                 .WithColor(Color.DarkGreen);
 
             return embed;
@@ -26,8 +31,7 @@ namespace TaricSharp.Messages
         protected override EmbedBuilder FinishedMessageEmbedBuilder()
         {
             return new EmbedBuilder()
-                .WithTitle($"Timer finished")
-                .AddField("Committed:", $"```{UsersToString()}```", true)
+                .WithTitle($"⌛ Finished")
                 .WithColor(Color.DarkRed);
         }
     }

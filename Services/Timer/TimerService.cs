@@ -14,7 +14,10 @@ namespace TaricSharp.Services.Timer
         protected readonly HashSet<UserListMessage> Messages = new HashSet<UserListMessage>();
         protected readonly Emoji AcceptEmoji = new Emoji("✔️");
         private readonly DiscordSocketClient _client;
-        private const int CheckTimeInSeconds = 5; // How often we update messages
+        private const int CheckTimeInSeconds = 10; // How often we update messages
+        
+        // ReSharper disable once NotAccessedField.Local
+        // Accessed by threading
         private System.Threading.Timer _timer;
         
         protected abstract Task OnMessageComplete(TimerMessage msg);

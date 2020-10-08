@@ -9,8 +9,7 @@ namespace TaricSharp.Services.Timer
 {
     public class TimerEndService : TimerService
     {
-        //Todo: Revert these timers
-        private const int HereTimeInSeconds = 15; // How long a user has to say they're here
+        private const int HereTimeInMinutes = 1; 
 
         private readonly LateUserDataService _dataService;
         private readonly LoggingService _loggingService;
@@ -40,9 +39,9 @@ namespace TaricSharp.Services.Timer
                 return;
             }
             
-            var timerEndMessage = new TimerEndMessage(msg, HereTimeInSeconds, timerStart.Users, channel.Guild.Id);
-            Messages.Add(timerEndMessage);
+            var timerEndMessage = new TimerEndMessage(msg, HereTimeInMinutes, timerStart.Users, channel.Guild.Id);
             await timerEndMessage.UpdateMessage();
+            Messages.Add(timerEndMessage);
         }
 
         protected override async Task OnMessageComplete(TimerMessage msg)

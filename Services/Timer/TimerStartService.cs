@@ -20,12 +20,12 @@ namespace TaricSharp.Services.Timer
         public async Task CreateTimerMessage(SocketCommandContext context, int minutes)
         {
             var msg = await context.Channel.SendMessageAsync("Creating timer...");
-
+            
             await msg.AddReactionAsync(AcceptEmoji);
 
             var timerMessage = new TimerStartMessage(msg, minutes);
-            Messages.Add(timerMessage);
             await timerMessage.AddUser(context.User);
+            Messages.Add(timerMessage);
         }
 
         protected override async Task OnMessageComplete(TimerMessage msg)

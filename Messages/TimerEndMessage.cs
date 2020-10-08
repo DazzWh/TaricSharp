@@ -40,7 +40,7 @@ namespace TaricSharp.Messages
         protected override EmbedBuilder CountdownMessageEmbedBuilder()
         {
             var embed = new EmbedBuilder()
-                .WithTitle($"⌛ Checking who is actually here...")
+                .WithTitle($"⌛ Who's here?")
                 .AddField("Time Remaining:", $"{Math.Round((EndTime - DateTime.Now).TotalSeconds)} seconds.")
                 .AddField("Here:", $"```{UsersToString(_onTimeUsers)}```", true)
                 .AddField("Should be here:", $"```{UsersToString()}```")
@@ -51,10 +51,8 @@ namespace TaricSharp.Messages
 
         protected override EmbedBuilder FinishedMessageEmbedBuilder()
         {
-            // Todo: Make this show the late count on the message, inject LateUserDataService
             return new EmbedBuilder()
-                .WithTitle("Late Report")
-                .AddField("Late: ", "```" + UsersToString() + "```", true)
+                .AddField("Late report: ", "```" + UsersToString() + "```", true)
                 .WithColor(Color.DarkRed);
         }
     }

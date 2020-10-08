@@ -8,13 +8,15 @@ namespace TaricSharp.Messages
     public abstract class TimerMessage : UserListMessage
     {
         public readonly DateTime EndTime;
+        protected abstract EmbedBuilder CountdownMessageEmbedBuilder();
+        protected abstract EmbedBuilder FinishedMessageEmbedBuilder();
 
         protected TimerMessage(
             RestUserMessage message,
             int minutes)
             : base(message)
         {
-            EndTime = DateTime.Now.AddSeconds(minutes); //Todo: make this mins for real thing
+            EndTime = DateTime.Now.AddMinutes(minutes);
         }
         
         public override async Task UpdateMessage()
@@ -28,7 +30,6 @@ namespace TaricSharp.Messages
             });
         }
 
-        protected abstract EmbedBuilder CountdownMessageEmbedBuilder();
-        protected abstract EmbedBuilder FinishedMessageEmbedBuilder();
+       
     }
 }

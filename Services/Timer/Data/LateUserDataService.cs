@@ -126,5 +126,11 @@ namespace TaricSharp.Services.Timer.Data
 
             await SaveData();
         }
+
+        public IEnumerable<LateUser> GetUsersFromGuild(ulong guildId)
+        {
+            _data.TryGetValue(guildId, out var users);
+            return users;
+        }
     }
 }
