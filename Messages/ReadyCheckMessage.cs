@@ -14,7 +14,6 @@ namespace TaricSharp.Messages
         public readonly IUser Creator;
         private readonly GameInfo _gameInfo;
 
-        private readonly Dictionary<ulong, string> _readyUsers;
         private readonly Dictionary<ulong, string> _notifyUsers;
 
         public ReadyCheckMessage(
@@ -25,14 +24,13 @@ namespace TaricSharp.Messages
             Creator = creator;
             _gameInfo = gameInfo;
 
-            _readyUsers = new Dictionary<ulong, string>();
             _notifyUsers = new Dictionary<ulong, string>();
         }
-        
+
         public override async Task RemoveUser(
             IUser user)
         {
-            _readyUsers.Remove(user.Id);
+            Users.Remove(user.Id);
             _notifyUsers.Remove(user.Id);
             await UpdateMessage();
         }
@@ -46,7 +44,7 @@ namespace TaricSharp.Messages
             }
             else
             {
-                _readyUsers.TryAdd(user.Id, user.Username);
+                Users.TryAdd(user.Id, user.Username);
                 _notifyUsers.TryAdd(user.Id, user.Username);
             }
 
@@ -110,8 +108,8 @@ namespace TaricSharp.Messages
 
         private string ReadyUsersToString()
         {
-            return _readyUsers.Count > 0
-                ? _readyUsers.Aggregate("",
+            return Users.Count > 0
+                ? Users.Aggregate("",
                     (current, user) =>
                         current + Environment.NewLine +
                         user.Value + " " + NotifyIconIfInNotifyList(user.Key))
