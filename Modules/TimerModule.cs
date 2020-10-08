@@ -62,9 +62,9 @@ namespace TaricSharp.Modules
                 return "-- No Data For Server --";
 
             var sb = new StringBuilder();
-            sb.Append("Name : OnTimeCount : LateCount");
+            sb.AppendLine($"{"Name", -20}{"OnTime", -10}{"Late", -10}");
             scores.ToList()
-                .ForEach(score=> sb.AppendLine($"{score.Item1} : {score.Item2.OnTimeCount} : {score.Item2.LateCount}"));
+                .ForEach(score=> sb.AppendLine($"{score.Item1, -20}{score.Item2.OnTimeCount, -10}{score.Item2.LateCount, -10}"));
             return sb.ToString();
         }
     }
