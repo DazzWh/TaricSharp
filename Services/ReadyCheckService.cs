@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using TaricSharp.Extensions;
 using TaricSharp.Services.Games;
 using TaricSharp.Messages;
 
@@ -67,13 +68,8 @@ namespace TaricSharp.Services
             ISocketMessageChannel channel,
             SocketReaction reaction)
         {
-            if (!reaction.User.IsSpecified || reaction.User.Value.IsBot)
-                return;
-
-            var msg = await channel.GetMessageAsync(message.Id);
-            var readyCheck = _readyChecks.FirstOrDefault(m => m.Message.Id == msg.Id);
-
-            if (readyCheck == null)
+            var readyCheck = _readyChecks.FirstOrDefault(m => m.Id == message.Id);
+            if (reaction.UserNullOrBot() || readyCheck == null)
                 return;
 
             if (reaction.Emote.Equals(_readyEmoji))

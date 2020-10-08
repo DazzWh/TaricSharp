@@ -7,6 +7,7 @@ using Discord;
 using Discord.Commands;
 using Discord.Rest;
 using Discord.WebSocket;
+using TaricSharp.Extensions;
 using TaricSharp.Messages;
 
 namespace TaricSharp.Services
@@ -71,14 +72,8 @@ namespace TaricSharp.Services
             ISocketMessageChannel channel,
             SocketReaction reaction)
         {
-            // TODO: Abstract this class into a "message service" class so this code isn't written 3 times.
-            if (!reaction.User.IsSpecified || reaction.User.Value.IsBot)
-                return;
-
-            var msg = await channel.GetMessageAsync(message.Id);
-            var timerMessage = _timerMessages.FirstOrDefault(m => m.Id == msg.Id);
-
-            if (timerMessage == null)
+            var timerMessage = _timerMessages.FirstOrDefault(m => m.Id == message.Id);
+            if (reaction.UserNullOrBot() || timerMessage == null)
                 return;
 
             if (!timerMessage.IsLocked)

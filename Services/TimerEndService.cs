@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
-using MoreLinq;
+using TaricSharp.Extensions;
 using TaricSharp.Messages;
 using TaricSharp.Services.PersistantData;
 
@@ -55,9 +55,8 @@ namespace TaricSharp.Services
         {
             var msg = (RestUserMessage) await timerStart.Message.Channel.SendMessageAsync("Creating timer complete message...");
             await msg.AddReactionAsync(_acceptEmoji);
-            
-            var channel = msg.Channel as SocketGuildChannel;
-            if (channel == null)
+
+            if (!(msg.Channel is SocketGuildChannel channel))
             {
                 await _loggingService.Log(new LogMessage(
                     LogSeverity.Error, 
@@ -85,23 +84,16 @@ namespace TaricSharp.Services
             ISocketMessageChannel channel,
             SocketReaction reaction)
         {
-            if (!reaction.User.IsSpecified || reaction.User.Value.IsBot)
-                return;
-
-            var msg = await channel.GetMessageAsync(message.Id);
-            if (msg == null)
+            var endMessage = _endMessages.FirstOrDefault(m => m.Id == message.Id);
+            if (reaction.UserNullOrBot() || endMessage == null)
                 return;
             
-            var endMessage = _endMessages.FirstOrDefault(m => m.Id == msg.Id);
-            if (endMessage == null)
-                return;
-
             if (reaction.Emote.Equals(_acceptEmoji))
                 await endMessage.AddUser(reaction.User.Value);
 
             await endMessage.Message.RemoveReactionAsync(reaction.Emote, reaction.User.Value);
         }
-
+        
         /// <summary>
         /// Checks for messages that are past their cutoff point
         /// Calls FinishMessage and logs all people who are late on any finished messages.
