@@ -5,60 +5,25 @@ using Discord.Rest;
 
 namespace TaricSharp.Messages
 {
-    public class TimerStartMessage : UserListMessage
+    public class TimerStartMessage : TimerMessage
     {
-
-        public readonly DateTime StartTime;
-        public readonly DateTime EndTime;
-        public bool IsLocked { get; private set; } = false;
-
-        public IMessageChannel Channel => Message.Channel;
-
         public TimerStartMessage(
             RestUserMessage message,
-            int minutes) : base(message)
-        {
-            StartTime = DateTime.Now;
-            EndTime = DateTime.Now.AddSeconds(minutes); //Todo: make this mins for real thing
-        }
+            int minutes) 
+            : base(message, minutes){}
 
-        public override async Task UpdateMessage()
-        {
-            await Message.ModifyAsync(m =>
-            {
-                m.Content = "";
-                m.Embed = MessageEmbedBuilder().Build();
-            });
-        }
-
-        public async Task LockMessage()
-        {
-            IsLocked = true;
-            await Message.RemoveAllReactionsAsync();
-            await UpdateMessage();
-        }
-
-        public async Task FinishMessage()
-        {
-            await Message.ModifyAsync(m =>
-            {
-                m.Content = "";
-                m.Embed = FinishedMessageEmbedBuilder().Build();
-            });
-        }
-
-        private EmbedBuilder MessageEmbedBuilder()
+        protected override EmbedBuilder CountdownMessageEmbedBuilder()
         {
             var embed = new EmbedBuilder()
                 .WithTitle($"⌛ Timer")
                 .AddField("Remaining:", $"{Math.Round((EndTime - DateTime.Now).TotalMinutes)} minutes.")
                 .AddField("Committed:", $"```{UsersToString()}```", true)
-                .WithColor(IsLocked ? Color.DarkBlue : Color.DarkGreen);
+                .WithColor(Color.DarkGreen);
 
             return embed;
         }
 
-        private EmbedBuilder FinishedMessageEmbedBuilder()
+        protected override EmbedBuilder FinishedMessageEmbedBuilder()
         {
             return new EmbedBuilder()
                 .WithTitle($"Timer finished")

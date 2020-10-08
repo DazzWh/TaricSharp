@@ -1,66 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Rest;
+using MoreLinq;
 
 namespace TaricSharp.Messages
 {
-    public class TimerEndMessage : UserListMessage
+    public class TimerEndMessage : TimerMessage
     {
-        public readonly DateTime EndTime;
         public readonly ulong GuildId;
-        public bool Finished = false;
 
         private readonly Dictionary<ulong, string> _onTimeUsers;
 
         public TimerEndMessage(
             RestUserMessage message,
-            int secondsTillEnd,
+            int minutes,
             Dictionary<ulong, string> initialUsers,
-            ulong guildId
-            ) : base(message)
+            ulong guildId) 
+            : base(message, minutes)
         {
             GuildId = guildId;
-            EndTime = DateTime.Now.AddSeconds(secondsTillEnd);
             _onTimeUsers = new Dictionary<ulong, string>();
-
-            foreach (var (key, value) in initialUsers)
-            {
-                Users.TryAdd(key, value);
-            }
-        }
-
-        public override async Task UpdateMessage()
-        {
-            await Message.ModifyAsync(m =>
-            {
-                m.Content = "";
-                m.Embed = MessageEmbedBuilder().Build();
-            });
+            initialUsers.ForEach(u => Users.TryAdd(u.Key, u.Value));
         }
 
         public override async Task AddUser(
             IUser user)
         {
+            if (!Users.ContainsKey(user.Id))
+                return;
+
             _onTimeUsers.TryAdd(user.Id, user.Username);
             Users.Remove(user.Id);
             await UpdateMessage();
         }
 
-        public async Task FinishMessage()
-        {
-            await Message.ModifyAsync(m =>
-            {
-                m.Content = "";
-                m.Embed = FinishedMessageEmbedBuilder().Build();
-            });
-            await Message.RemoveAllReactionsAsync();
-
-            Finished = true;
-        }
-
-        private EmbedBuilder MessageEmbedBuilder()
+        protected override EmbedBuilder CountdownMessageEmbedBuilder()
         {
             var embed = new EmbedBuilder()
                 .WithTitle($"⌛ Checking who is actually here...")
@@ -72,7 +49,7 @@ namespace TaricSharp.Messages
             return embed;
         }
 
-        private EmbedBuilder FinishedMessageEmbedBuilder()
+        protected override EmbedBuilder FinishedMessageEmbedBuilder()
         {
             // Todo: Make this show the late count on the message, inject LateUserDataService
             return new EmbedBuilder()
