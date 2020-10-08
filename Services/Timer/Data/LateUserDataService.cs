@@ -4,13 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Serialization;
 using Discord;
 using TaricSharp.Extensions;
-using TaricSharp.Services.Games;
 
-namespace TaricSharp.Services.PersistantData
+namespace TaricSharp.Services.Timer.Data
 {
     /// <summary>
     /// A service for storing data related to users being late, used by timer service
@@ -102,13 +100,10 @@ namespace TaricSharp.Services.PersistantData
             }
         }
 
-        /// <summary>
-        /// Used by TimerEndService to track how often users have been late
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="guildId"></param>
-        public async Task IncrementLateUser(ulong userId, ulong guildId)
+        private async Task IncrementLateUser(ulong userId, ulong guildId)
         {
+            await SemaphoreSlim.WaitAsync();
+            
             var usersInGuild = _data.GetOrCreate(guildId);
             var user = usersInGuild.FirstOrDefault(u => u.Id == userId);
 
@@ -117,12 +112,19 @@ namespace TaricSharp.Services.PersistantData
                 user = new LateUser(userId);
                 _data[guildId].Add(user);
             }
-            
+
             user.Count++;
-            
+            SemaphoreSlim.Release();
+        }
+
+        public async Task IncrementLateUsers(IEnumerable<ulong> userIds, ulong guildId)
+        {
+            foreach (var id in userIds)
+            {
+                await IncrementLateUser(id, guildId);
+            }
+
             await SaveData();
         }
-        
-        //Todo: Increment multiple users with only one SaveData call
     }
 }

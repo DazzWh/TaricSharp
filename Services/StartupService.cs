@@ -3,7 +3,8 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using TaricSharp.Services.Games;
-using TaricSharp.Services.PersistantData;
+using TaricSharp.Services.Timer;
+using TaricSharp.Services.Timer.Data;
 
 namespace TaricSharp.Services
 {

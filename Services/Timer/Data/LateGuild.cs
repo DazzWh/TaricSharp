@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace TaricSharp.Services.PersistantData
+namespace TaricSharp.Services.Timer.Data
 {
     [XmlType("LateGuild")]
     public class LateGuild

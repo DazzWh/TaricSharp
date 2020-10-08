@@ -1,7 +1,6 @@
-﻿using System;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
-namespace TaricSharp.Services.PersistantData
+namespace TaricSharp.Services.Timer.Data
 {
     [XmlType("LateUser")]
     public class LateUser

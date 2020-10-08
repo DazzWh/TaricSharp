@@ -1,16 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using Discord.Rest;
 using Discord.WebSocket;
 using TaricSharp.Extensions;
 using TaricSharp.Messages;
 
-namespace TaricSharp.Services
+namespace TaricSharp.Services.Timer
 {
     public class TimerStartService
     {
@@ -22,7 +20,7 @@ namespace TaricSharp.Services
         private readonly TimerEndService _timerEndService;
         private readonly HashSet<TimerStartMessage> _timerMessages;
 
-        private Timer _timer;
+        private System.Threading.Timer _timer;
         private readonly Emoji _acceptEmoji = new Emoji("✔️");
         private readonly Emoji _cancelEmoji = new Emoji("❌");
 
@@ -39,7 +37,7 @@ namespace TaricSharp.Services
         {
             _client.ReactionAdded += HandleReactionsAsync;
 
-            _timer = new Timer(async e => await CheckMessages(),
+            _timer = new System.Threading.Timer(async e => await CheckMessages(),
                 null,
                 TimeSpan.Zero,
                 TimeSpan.FromSeconds(CheckTimeInSeconds));

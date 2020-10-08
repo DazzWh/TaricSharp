@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
-using TaricSharp.Services;
+using TaricSharp.Services.Timer;
 
 namespace TaricSharp.Modules
 {

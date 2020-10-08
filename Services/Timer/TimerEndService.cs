@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
 using TaricSharp.Extensions;
 using TaricSharp.Messages;
-using TaricSharp.Services.PersistantData;
+using TaricSharp.Services.Timer.Data;
 
-namespace TaricSharp.Services
+namespace TaricSharp.Services.Timer
 {
     public class TimerEndService
     {
@@ -20,7 +19,7 @@ namespace TaricSharp.Services
 
         private readonly HashSet<TimerEndMessage> _endMessages;
 
-        private Timer _timer;
+        private System.Threading.Timer _timer;
         private readonly Emoji _acceptEmoji = new Emoji("✔️");
         private readonly DiscordSocketClient _client;
         private readonly LateUserDataService _dataService;
@@ -41,7 +40,7 @@ namespace TaricSharp.Services
         {
             _client.ReactionAdded += HandleReactionsAsync;
 
-            _timer = new Timer(async e => await CheckMessages(),
+            _timer = new System.Threading.Timer(async e => await CheckMessages(),
                 null,
                 TimeSpan.Zero,
                 TimeSpan.FromSeconds(CheckTimeInSeconds));
@@ -108,11 +107,7 @@ namespace TaricSharp.Services
             foreach (var msg in finishedEndMessages)
             {
                 await msg.FinishMessage();
-
-                foreach (var user in msg.Users)
-                {
-                    await _dataService.IncrementLateUser(user.Key, msg.GuildId);
-                }
+                await _dataService.IncrementLateUsers(msg.Users.Keys, msg.GuildId);
             }
 
             _endMessages.RemoveWhere(msg => msg.Finished);

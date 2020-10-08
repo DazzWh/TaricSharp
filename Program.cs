@@ -7,7 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using TaricSharp.Modules;
 using TaricSharp.Services;
 using TaricSharp.Services.Games;
-using TaricSharp.Services.PersistantData;
+using TaricSharp.Services.Timer;
+using TaricSharp.Services.Timer.Data;
 
 namespace TaricSharp
 {
