@@ -28,9 +28,9 @@
 
   <ItemGroup>
     <None Remove="Games.xml" />
-    <Content Include="Games.xml">
+    <Resource Include="Games.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </Resource>
   </ItemGroup>
 
 </Project>
