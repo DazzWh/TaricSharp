@@ -10,16 +10,16 @@ namespace TaricSharp.Modules
     /// </summary>
     [RequireOwner]
     [RequireBotPermission(GuildPermission.SendMessages)]
-    public class AdminModule : ModuleBase<SocketCommandContext>
+    public partial class AdminModule : ModuleBase<SocketCommandContext>
     {
         [Command("say")]
         [Summary("Repeats message into given channel")]
         public async Task Say(
-            [Summary("The channel to repeat a message into")] ISocketMessageChannel channel,
+            [Summary("The channel to repeat a message into")]
+            ISocketMessageChannel channel,
             [Remainder] [Summary("The message")] string message)
         {
             await channel.SendMessageAsync(message);
         }
-        
     }
 }

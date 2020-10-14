@@ -24,6 +24,9 @@
     <Compile Update="Modules/RoleModule.Game.cs">
       <DependentUpon>RoleModule.cs</DependentUpon>
     </Compile>
+    <Compile Update="Modules/AdminModule.Status.cs">
+      <DependentUpon>AdminModule.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
