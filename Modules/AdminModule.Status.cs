@@ -14,6 +14,11 @@ namespace TaricSharp.Modules
             string title) =>
             await Context.Client.SetActivityAsync(new Game(title, ActivityType.CustomStatus));
 
+        [Command("clear-status")]
+        [Summary("Clears bots status message")]
+        public async Task ClearStatus() =>
+            await Context.Client.SetActivityAsync(null);
+
         [Command("play")]
         [Summary("Sets the bots playing message")]
         public async Task Play(
