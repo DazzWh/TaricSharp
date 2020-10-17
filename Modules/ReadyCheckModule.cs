@@ -27,5 +27,13 @@ namespace TaricSharp.Modules
         {
             await _readyCheckService.CreateReadyCheck(Context);
         }
+        
+        [Command("ready")]
+        [Alias("check")]
+        public async Task InitiateReadyCheck(
+            [Remainder] string text)
+        {
+            await _readyCheckService.CreateReadyCheck(Context);
+        }
     }
 }
