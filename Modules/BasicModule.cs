@@ -1,7 +1,10 @@
-﻿using Discord;
-using Discord.Commands;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using JetBrains.Annotations;
+
+// ReSharper disable All
 
 namespace TaricSharp.Modules
 {
@@ -9,6 +12,7 @@ namespace TaricSharp.Modules
     /// Module of basic chat commands that can be used by all users
     /// </summary>
     [RequireBotPermission(GuildPermission.SendMessages)]
+    [UsedImplicitly(ImplicitUseTargetFlags.Members)]
     public class BasicModule : ModuleBase<SocketCommandContext>
     {
         private readonly Random _rnd;

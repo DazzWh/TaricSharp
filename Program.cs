@@ -4,7 +4,6 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
-using TaricSharp.Modules;
 using TaricSharp.Services;
 using TaricSharp.Services.Games;
 using TaricSharp.Services.Timer;
@@ -12,12 +11,12 @@ using TaricSharp.Services.Timer.Data;
 
 namespace TaricSharp
 {
-    internal class Program
+    internal static class Program
     {
-        public static Task Main(string[] args)
-            => new Program().RunAsync();
+        public static Task Main()
+            => RunAsync();
 
-        public async Task RunAsync()
+        private static async Task RunAsync()
         {
             var provider = BuildServiceProvider();
             await provider.GetRequiredService<StartupService>().StartAsync();

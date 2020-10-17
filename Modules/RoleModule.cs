@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.Rest;
+using JetBrains.Annotations;
 using TaricSharp.Services;
 
 namespace TaricSharp.Modules
@@ -13,6 +14,7 @@ namespace TaricSharp.Modules
     /// The server is setup so that users have one role to set their name colour.
     /// All other roles are "game roles", that are one reserved colour and can be mentioned.
     /// </summary>
+    [UsedImplicitly(ImplicitUseTargetFlags.Members)]
     [RequireBotPermission(GuildPermission.SendMessages | GuildPermission.ManageRoles)]
     public partial class RoleModule : ModuleBase<SocketCommandContext>
     {

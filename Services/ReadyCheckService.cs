@@ -6,8 +6,8 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using TaricSharp.Extensions;
-using TaricSharp.Services.Games;
 using TaricSharp.Messages;
+using TaricSharp.Services.Games;
 
 namespace TaricSharp.Services
 {

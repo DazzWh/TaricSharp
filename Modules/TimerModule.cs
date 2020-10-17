@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using JetBrains.Annotations;
 using TaricSharp.Services.Timer;
 using TaricSharp.Services.Timer.Data;
 
 namespace TaricSharp.Modules
 {
+    [UsedImplicitly(ImplicitUseTargetFlags.Members)]
     public class TimerModule : ModuleBase<SocketCommandContext>
     {
         private readonly TimerStartService _timerStartService;
