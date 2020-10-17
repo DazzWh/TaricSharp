@@ -3,7 +3,8 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using TaricSharp.Services.Games;
-using TaricSharp.Services.ReadyCheck;
+using TaricSharp.Services.Timer;
+using TaricSharp.Services.Timer.Data;
 
 namespace TaricSharp.Services
 {
@@ -17,6 +18,9 @@ namespace TaricSharp.Services
         private readonly PinService _pinService;
         private readonly ReadyCheckService _readyCheckService;
         private readonly GameService _gameService;
+        private readonly TimerStartService _timerStartService;
+        private readonly TimerEndService _timerEndService;
+        private readonly LateUserDataService _lateUserDataService;
         private readonly LoggingService _logging;
 
         public StartupService(
@@ -25,6 +29,9 @@ namespace TaricSharp.Services
             PinService pinService,
             ReadyCheckService readyCheckService,
             GameService gameService,
+            TimerStartService timerStartService,
+            TimerEndService timerEndService,
+            LateUserDataService lateUserDataService,
             LoggingService logging)
         {
             _client = discord;
@@ -32,6 +39,9 @@ namespace TaricSharp.Services
             _pinService = pinService;
             _readyCheckService = readyCheckService;
             _gameService = gameService;
+            _timerStartService = timerStartService;
+            _timerEndService = timerEndService;
+            _lateUserDataService = lateUserDataService;
             _logging = logging;
         }
 
@@ -40,6 +50,9 @@ namespace TaricSharp.Services
             _logging.Initialize();
             _readyCheckService.Initialize();
             _gameService.Initialize();
+            _timerStartService.Initialize();
+            _timerEndService.Initialize();
+            await _lateUserDataService.Initialise();
 
             await _client.LoginAsync(TokenType.Bot,
                 Environment.GetEnvironmentVariable("DiscordToken"));

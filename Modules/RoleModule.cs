@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.Rest;
+using TaricSharp.Services;
 
 namespace TaricSharp.Modules
 {
@@ -16,7 +16,12 @@ namespace TaricSharp.Modules
     [RequireBotPermission(GuildPermission.SendMessages | GuildPermission.ManageRoles)]
     public partial class RoleModule : ModuleBase<SocketCommandContext>
     {
-        public event Func<LogMessage, Task> Log;
+        private readonly LoggingService _loggingService;
+
+        public RoleModule(LoggingService loggingService)
+        {
+            _loggingService = loggingService;
+        }
 
         private async Task<RestRole> CreateRole(
             string name,
@@ -29,7 +34,7 @@ namespace TaricSharp.Modules
             }
             catch(Exception ex)
             {
-                Log?.Invoke(new LogMessage(
+                await _loggingService.Log(new LogMessage(
                     LogSeverity.Error, 
                     nameof(RoleModule), 
                     $"{ex.Message}"));
@@ -53,7 +58,7 @@ namespace TaricSharp.Modules
             var role = CreateRole(gameName, roleColor, mentionable);
             if (role.Result == null)
             {
-                Log?.Invoke(new LogMessage(
+                await _loggingService.Log(new LogMessage(
                     LogSeverity.Error, 
                     nameof(RoleModule), 
                     $"{gameName} role not added to {Context.User.Username}"));

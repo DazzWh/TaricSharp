@@ -14,32 +14,28 @@ namespace TaricSharp.Services
         private readonly DiscordSocketClient _client;
         private readonly CommandService _commands;
         private readonly GameService _gameService;
-        private readonly RoleModule _roleModule;
         private string _logDirectory { get; }
         private string _logFile => Path.Combine(_logDirectory, $"{DateTime.UtcNow:yyyy-MM-dd}.txt");
 
         public LoggingService(
             DiscordSocketClient client, 
             CommandService commands,
-            GameService gameService,
-            RoleModule roleModule)
+            GameService gameService)
         {
             _client = client;
             _commands = commands;
             _gameService = gameService;
-            _roleModule = roleModule;
             _logDirectory = Path.Combine(AppContext.BaseDirectory, "logs");
         }
         
         public void Initialize()
         {
-            _client.Log += OnLogAsync;
-            _commands.Log += OnLogAsync;
-            _gameService.Log += OnLogAsync;
-            _roleModule.Log += OnLogAsync;
+            _client.Log += Log;
+            _commands.Log += Log;
+            _gameService.Log += Log;
         }
 
-        private Task OnLogAsync(LogMessage msg)
+        public Task Log(LogMessage msg)
         {
             if (!Directory.Exists(_logDirectory))
                 Directory.CreateDirectory(_logDirectory);

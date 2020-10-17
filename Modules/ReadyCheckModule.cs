@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
+using TaricSharp.Services;
 using TaricSharp.Services.Games;
-using TaricSharp.Services.ReadyCheck;
 
 namespace TaricSharp.Modules
 {
@@ -24,7 +24,7 @@ namespace TaricSharp.Modules
         [Command("ready")]
         [Alias("check")]
         [Summary("Initiates a ready check")]
-        [Remarks("Searches message for GameRole mentions to set the ReadyCheck theme")]
+        [Remarks("Searches message for GameRole mentions to set the ReadyCheckMessage theme")]
         public async Task InitiateReadyCheck()
         {
             await _readyCheckService.CreateReadyCheck(Context);

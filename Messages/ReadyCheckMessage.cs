@@ -7,41 +7,30 @@ using Discord.Rest;
 using TaricSharp.Services.Games;
 using Color = Discord.Color;
 
-namespace TaricSharp.Services.ReadyCheck
+namespace TaricSharp.Messages
 {
-    public class ReadyCheck
+    public class ReadyCheckMessage : UserListMessage
     {
-        public readonly RestUserMessage ReadyMsg;
         public readonly IUser Creator;
         private readonly GameInfo _gameInfo;
 
-        private readonly Dictionary<ulong, string> _readyUsers;
         private readonly Dictionary<ulong, string> _notifyUsers;
 
-        public ReadyCheck(
+        public ReadyCheckMessage(
             RestUserMessage readyMsg,
             IUser creator,
-            GameInfo gameInfo)
+            GameInfo gameInfo) : base(readyMsg)
         {
-            ReadyMsg = readyMsg;
             Creator = creator;
             _gameInfo = gameInfo;
 
-            _readyUsers = new Dictionary<ulong, string>();
             _notifyUsers = new Dictionary<ulong, string>();
         }
 
-        public async Task AddReadyUser(
+        public override async Task RemoveUser(
             IUser user)
         {
-            _readyUsers.TryAdd(user.Id, user.Username);
-            await UpdateMessage();
-        }
-
-        public async Task RemoveReadyUser(
-            IUser user)
-        {
-            _readyUsers.Remove(user.Id);
+            Users.Remove(user.Id);
             _notifyUsers.Remove(user.Id);
             await UpdateMessage();
         }
@@ -55,31 +44,31 @@ namespace TaricSharp.Services.ReadyCheck
             }
             else
             {
-                _readyUsers.TryAdd(user.Id, user.Username);
+                Users.TryAdd(user.Id, user.Username);
                 _notifyUsers.TryAdd(user.Id, user.Username);
             }
 
             await UpdateMessage();
         }
 
-        public async Task Finish()
+        public async Task FinishMessage()
         {
             await UpdateFinishedMessage();
 
             foreach (var userIdName in _notifyUsers)
             {
-                var user = await ReadyMsg.Channel.GetUserAsync(userIdName.Key);
-                await user.SendMessageAsync($"Ready check finished! {ReadyMsg.GetJumpUrl()}");
+                var user = await Message.Channel.GetUserAsync(userIdName.Key);
+                await user.SendMessageAsync($"Ready check finished! {Message.GetJumpUrl()}");
             }
 
-            await ReadyMsg.RemoveAllReactionsAsync();
+            await Message.RemoveAllReactionsAsync();
         }
 
-        private async Task UpdateMessage()
+        public override async Task UpdateMessage()
         {
             var embed = BaseEmbedBuilder();
 
-            await ReadyMsg.ModifyAsync(m =>
+            await Message.ModifyAsync(m =>
             {
                 m.Content = "";
                 m.Embed = embed.Build();
@@ -95,7 +84,7 @@ namespace TaricSharp.Services.ReadyCheck
                 .WithColor(Color.Green)
                 .WithFooter("Game on!");
 
-            await ReadyMsg.ModifyAsync(m =>
+            await Message.ModifyAsync(m =>
             {
                 m.Content = "";
                 m.Embed = embed.Build();
@@ -107,7 +96,7 @@ namespace TaricSharp.Services.ReadyCheck
             var embed = new EmbedBuilder()
                 .WithAuthor(Creator.Username, Creator.GetAvatarUrl())
                 .WithTitle("Ready check")
-                .AddField("Players:", "```" + ReadyUsersToString() + "```", true)
+                .AddField("Players:", $"```{ReadyUsersToString()}```", true)
                 .WithFooter("Use the reactions to ready up, email will send a pm when people are ready." +
                             Environment.NewLine +
                             "Creator can hit the red \"No Vacancy\" button to conclude the check.");
@@ -119,8 +108,8 @@ namespace TaricSharp.Services.ReadyCheck
 
         private string ReadyUsersToString()
         {
-            return _readyUsers.Count > 0
-                ? _readyUsers.Aggregate("",
+            return Users.Count > 0
+                ? Users.Aggregate("",
                     (current, user) =>
                         current + Environment.NewLine +
                         user.Value + " " + NotifyIconIfInNotifyList(user.Key))
@@ -143,5 +132,7 @@ namespace TaricSharp.Services.ReadyCheck
                     .WithThumbnailUrl($"{_gameInfo.ImageUrl}");
             }
         }
+
+        public override int GetHashCode() => Message.GetHashCode();
     }
 }
