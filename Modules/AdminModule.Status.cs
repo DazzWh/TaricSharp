@@ -33,9 +33,14 @@ namespace TaricSharp.Modules
             await Context.Client.SetActivityAsync(new Game(title, type));
         }
 
-        public async Task Play()   => await ClearActivity();
+        [Command("play")]
+        public async Task Play() => await ClearActivity();
+
+        [Command("listen")]
         public async Task Listen() => await ClearActivity();
-        public async Task Watch()  => await ClearActivity();
+
+        [Command("watch")]
+        public async Task Watch() => await ClearActivity();
 
         private async Task ClearActivity()
         {
