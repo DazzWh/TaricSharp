@@ -1,26 +1,24 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
+using JetBrains.Annotations;
 using TaricSharp.Services;
-using TaricSharp.Services.Games;
 
 namespace TaricSharp.Modules
 {
     /// <summary>
     /// Module that adds the ready check functionality
     /// </summary>
+    [UsedImplicitly(ImplicitUseTargetFlags.Members)]
     public class ReadyCheckModule : ModuleBase<SocketCommandContext>
     {
         private readonly ReadyCheckService _readyCheckService;
-        private readonly GameService _gameService;
 
         public ReadyCheckModule(
-            ReadyCheckService readyCheckService,
-            GameService gameService)
+            ReadyCheckService readyCheckService)
         {
             _readyCheckService = readyCheckService;
-            _gameService = gameService;
         }
-        
+
         [Command("ready")]
         [Alias("check")]
         [Summary("Initiates a ready check")]
@@ -29,14 +27,5 @@ namespace TaricSharp.Modules
         {
             await _readyCheckService.CreateReadyCheck(Context);
         }
-
-        [Command("ready")]
-        [Alias("check")]
-        public async Task InitiateReadyCheck(
-            [Remainder] string text)
-        {
-            await _readyCheckService.CreateReadyCheck(Context);
-        }
-        
     }
 }

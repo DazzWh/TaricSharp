@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Rest;
 using TaricSharp.Services.Games;
-using Color = Discord.Color;
 
 namespace TaricSharp.Messages
 {
@@ -27,7 +26,7 @@ namespace TaricSharp.Messages
             _notifyUsers = new Dictionary<ulong, string>();
         }
 
-        public override async Task RemoveUser(
+        public async Task RemoveUser(
             IUser user)
         {
             Users.Remove(user.Id);

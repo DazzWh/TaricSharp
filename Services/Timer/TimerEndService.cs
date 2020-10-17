@@ -34,7 +34,7 @@ namespace TaricSharp.Services.Timer
                 await _loggingService.Log(new LogMessage(
                     LogSeverity.Error, 
                     nameof(TimerEndService), 
-                    $"Failed to cast TimerStartMessage channel to SocketGuildChannel"));
+                    "Failed to cast TimerStartMessage channel to SocketGuildChannel"));
                 await msg.ModifyAsync(m => m.Content = "Failed to create TimerEndMessage");
                 return;
             }

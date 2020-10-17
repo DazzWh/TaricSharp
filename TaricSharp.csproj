@@ -13,6 +13,7 @@
   <ItemGroup>
     <PackageReference Include="Discord.Net" Version="2.2.0" />
     <PackageReference Include="Discord.Net.Commands" Version="2.2.0" />
+    <PackageReference Include="JetBrains.Annotations" Version="2020.2.0-eap" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.7" />
     <PackageReference Include="morelinq" Version="3.3.2" />
   </ItemGroup>
@@ -31,9 +32,9 @@
 
   <ItemGroup>
     <None Remove="Games.xml" />
-    <Resource Include="Games.xml">
+    <Content Include="Games.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
+    </Content>
   </ItemGroup>
 
 </Project>

@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using JetBrains.Annotations;
 using MoreLinq.Extensions;
 
 namespace TaricSharp.Modules
@@ -11,6 +12,7 @@ namespace TaricSharp.Modules
     /// <summary>
     /// Module that provides information about the bot
     /// </summary>
+    [UsedImplicitly(ImplicitUseTargetFlags.Members)]
     [RequireBotPermission(GuildPermission.SendMessages)]
     public class AboutModule : ModuleBase<SocketCommandContext>
     {

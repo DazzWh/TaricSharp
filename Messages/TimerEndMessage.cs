@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Rest;
@@ -39,7 +38,7 @@ namespace TaricSharp.Messages
         protected override EmbedBuilder CountdownMessageEmbedBuilder()
         {
             var embed = new EmbedBuilder()
-                .WithTitle($"⌛ Who's here?")
+                .WithTitle("⌛ Who's here?")
                 .AddField("Time Remaining:", $"{Math.Round((EndTime - DateTime.Now).TotalSeconds)} seconds.")
                 .AddField("Here:", $"```{UsersToString(OnTimeUsers)}```", true)
                 .AddField("Should be here:", $"```{UsersToString()}```")

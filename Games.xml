@@ -44,7 +44,7 @@
     <gameinfo>
         <name>Among Us</name>
         <role>AmongUs</role>
-        <color>00FBFF</color>
+        <color>#00FFF2</color>
         <image>https://cdn.cloudflare.steamstatic.com/steam/apps/945360/header.jpg</image>
     </gameinfo>
 
@@ -59,6 +59,6 @@
         <name>Interplanetary</name>
         <role>Interplanetary</role>
         <color>0A0A0A</color>
-        <image></image>
+        <image>https://cdn.cloudflare.steamstatic.com/steam/apps/278910/header.jpg</image>
     </gameinfo>
 </games>

@@ -23,16 +23,9 @@ namespace TaricSharp.Services.Games
 
         public GameInfo GetGameFromMentions(IEnumerable<SocketRole> mentions)
         {
-            foreach (var mention in mentions)
-            {
-                var game = _games.FirstOrDefault(g => g.RoleName.Equals(mention.Name));
-                if (game != null)
-                {
-                    return game;
-                }
-            }
-
-            return null;
+            return mentions.Select(mention =>
+                _games.FirstOrDefault(g => g.RoleName.Equals(mention.Name)))
+                .FirstOrDefault(game => game != null);
         }
 
         private List<GameInfo> GetGameInfo()
