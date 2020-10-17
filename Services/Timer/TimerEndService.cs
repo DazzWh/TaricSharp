@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
@@ -26,7 +27,8 @@ namespace TaricSharp.Services.Timer
 
         public async Task CreateEndTimerMessage(TimerStartMessage timerStart)
         {
-            var msg = (RestUserMessage) await timerStart.Message.Channel.SendMessageAsync("Creating timer complete message...");
+            var msg = (RestUserMessage) await timerStart.Message.Channel
+                .SendMessageAsync($"Creating timer complete message for {UsersToMentions(timerStart)}...");
             await msg.AddReactionAsync(AcceptEmoji);
 
             if (!(msg.Channel is SocketGuildChannel channel))
@@ -42,6 +44,18 @@ namespace TaricSharp.Services.Timer
             var timerEndMessage = new TimerEndMessage(msg, HereTimeInMinutes, timerStart.Users, channel.Guild.Id);
             await timerEndMessage.UpdateMessage();
             Messages.Add(timerEndMessage);
+        }
+
+        private static string UsersToMentions(UserListMessage msg)
+        {
+            if (!(msg.Message.Channel is SocketGuildChannel channel))
+            {
+                return string.Empty;
+            }
+
+            return msg.Users.Keys
+                .Select(userId => channel.GetUser(userId))
+                .Aggregate("", (current, user) => $"{current} {user.Mention}");
         }
 
         protected override async Task OnMessageComplete(TimerMessage msg)

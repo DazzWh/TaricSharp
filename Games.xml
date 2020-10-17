@@ -1,64 +1,86 @@
 ﻿<games>
-    <gameinfo>
+    <game-info>
         <name>Dota</name>
         <role>Dota</role>
         <color>D44A2C</color>
         <image>https://steamcdn-a.akamaihd.net/steam/apps/570/header.jpg</image>
-    </gameinfo>
+    </game-info>
 
-    <gameinfo>
+    <game-info>
         <name>Project Winter</name>
         <role>Winter</role>
         <color>26DCE8</color>
         <image>https://steamcdn-a.akamaihd.net/steam/apps/774861/header.jpg</image>
-    </gameinfo>
+    </game-info>
 
-    <gameinfo>
+    <game-info>
         <name>Fall Guys</name>
         <role>Fall Guys</role>
         <color>ED20E7</color>
         <image>https://steamcdn-a.akamaihd.net/steam/apps/1097150/header.jpg</image>
-    </gameinfo>
+    </game-info>
 
-    <gameinfo>
+    <game-info>
         <name>Pavlov</name>
         <role>Pavlov</role>
         <color>83EDA8</color>
         <image>https://steamcdn-a.akamaihd.net/steam/apps/555160/header.jpg</image>
-    </gameinfo>
+    </game-info>
 
-    <gameinfo>
+    <game-info>
         <name>Killing Floor</name>
         <role>KF2</role>
         <color>EE3434</color>
         <image>https://steamcdn-a.akamaihd.net/steam/apps/232090/header.jpg</image>
-    </gameinfo>
+    </game-info>
 
-    <gameinfo>
+    <game-info>
         <name>JackBox</name>
         <role>Jackbox</role>
         <color>91339E</color>
         <image>https://steamcdn-a.akamaihd.net/steam/apps/331670/header.jpg</image>
-    </gameinfo>
+    </game-info>
 
-    <gameinfo>
+    <game-info>
         <name>Among Us</name>
         <role>AmongUs</role>
         <color>#00FFF2</color>
         <image>https://cdn.cloudflare.steamstatic.com/steam/apps/945360/header.jpg</image>
-    </gameinfo>
+    </game-info>
 
-    <gameinfo>
+    <game-info>
         <name>Fox Hole</name>
         <role>Foxhole</role>
         <color>38C42A</color>
         <image>https://cdn.cloudflare.steamstatic.com/steam/apps/505460/header_alt_assets_3.jpg</image>
-    </gameinfo>
+    </game-info>
 
-    <gameinfo>
+    <game-info>
         <name>Interplanetary</name>
         <role>Interplanetary</role>
         <color>0A0A0A</color>
         <image>https://cdn.cloudflare.steamstatic.com/steam/apps/278910/header.jpg</image>
-    </gameinfo>
+    </game-info>
+
+    <game-info>
+        <name>Phasmophobia</name>
+        <role>Phasmophobia</role>
+        <color>080808</color>
+        <image>https://cdn.cloudflare.steamstatic.com/steam/apps/739630/header.jpg</image>
+    </game-info>
+
+    <game-info>
+        <name>Phasmophobia</name>
+        <role>Phasmophobia</role>
+        <color>080808</color>
+        <image>https://cdn.cloudflare.steamstatic.com/steam/apps/739630/header.jpg</image>
+    </game-info>
+
+    <game-info>
+        <name>Party Animals</name>
+        <role>Party Animals</role>
+        <color>F55BF5</color>
+        <image>https://cdn.cloudflare.steamstatic.com/steam/apps/1260320/header.jpg</image>
+    </game-info>
+    
 </games>
