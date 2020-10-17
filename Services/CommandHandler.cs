@@ -50,10 +50,7 @@ namespace TaricSharp.Services
 
             // Keep in mind that result does not indicate a return value
             // rather an object stating if the command executed successfully.
-            var result = await _commands.ExecuteAsync(
-                context: context,
-                argPos: argPos,
-                services: _services);
+            await _commands.ExecuteAsync(context, argPos, _services);
 
             // Optionally, we may inform the user if the command fails
             // to be executed; however, this may not always be desired,

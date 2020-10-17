@@ -2,6 +2,7 @@
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using JetBrains.Annotations;
 
 namespace TaricSharp.Modules
 {
@@ -10,6 +11,7 @@ namespace TaricSharp.Modules
     /// </summary>
     [RequireOwner]
     [RequireBotPermission(GuildPermission.SendMessages)]
+    [UsedImplicitly(ImplicitUseTargetFlags.Members)]
     public partial class AdminModule : ModuleBase<SocketCommandContext>
     {
         [Command("say")]

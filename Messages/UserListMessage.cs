@@ -25,23 +25,8 @@ namespace TaricSharp.Messages
             Users.TryAdd(user.Id, user.Username);
             await UpdateMessage();
         }
-
-        public virtual async Task AddUser(
-            ulong id,
-            string username)
-        {
-            Users.TryAdd(id, username);
-            await UpdateMessage();
-        }
-
-        public virtual async Task RemoveUser(
-            IUser user)
-        {
-            Users.Remove(user.Id);
-            await UpdateMessage();
-        }
         
-        protected string UsersToString(Dictionary<ulong, string> userList)
+        protected static string UsersToString(Dictionary<ulong, string> userList)
         {
             return userList.Count > 0
                 ? userList.Aggregate("",

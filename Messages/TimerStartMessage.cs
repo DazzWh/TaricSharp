@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using Discord;
 using Discord.Rest;
 
@@ -14,13 +13,13 @@ namespace TaricSharp.Messages
 
         protected override EmbedBuilder CountdownMessageEmbedBuilder()
         {
-            var timeRemaining = (EndTime - DateTime.Now);
+            var timeRemaining = EndTime - DateTime.Now;
             var remainingMessage = timeRemaining.TotalMinutes > 1 ? 
                 $"{Math.Round(timeRemaining.TotalMinutes)} minutes." : 
                 $"{Math.Round(timeRemaining.TotalSeconds)} seconds.";
 
             var embed = new EmbedBuilder()
-                .WithTitle($"⌛ Timer")
+                .WithTitle("⌛ Timer")
                 .AddField("Remaining:", remainingMessage)
                 .AddField("Users:", $"```{UsersToString()}```", true)
                 .WithColor(Color.DarkGreen);
@@ -31,7 +30,7 @@ namespace TaricSharp.Messages
         protected override EmbedBuilder FinishedMessageEmbedBuilder()
         {
             return new EmbedBuilder()
-                .WithTitle($"⌛ Finished")
+                .WithTitle("⌛ Finished")
                 .WithColor(Color.DarkRed);
         }
     }

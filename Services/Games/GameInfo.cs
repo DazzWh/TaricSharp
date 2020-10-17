@@ -1,10 +1,12 @@
 ﻿using System.Xml.Serialization;
 using Discord;
+using JetBrains.Annotations;
 using TaricSharp.Extensions;
 
 namespace TaricSharp.Services.Games
 {
-    [XmlType("gameinfo")]
+    [XmlType("game-info")]
+    [UsedImplicitly(ImplicitUseTargetFlags.Members)]
     public class GameInfo
     {
         [XmlElement("name")] public string GameName;
