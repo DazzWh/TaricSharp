@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -27,13 +28,21 @@ namespace TaricSharp.Services
             ISocketMessageChannel channel,
             SocketReaction reaction)
         {
-            if (reaction.Emote.Name.Equals("📌") &&
-                channel.GetMessageAsync(message.Id).Result is IUserMessage usrMsg &&
-                usrMsg.Reactions.Count(
-                    r => r.Key.Name.Equals("📌")) >= Constants.AmountOfPinsNeededToPin)
+            if (channel.GetMessageAsync(message.Id).Result is IUserMessage usrMsg)
             {
-                await usrMsg.PinAsync();
+                var pinCount = usrMsg.Reactions
+                    .Where(pair => EmoteIsAPin(pair.Key))
+                    .Select(e => e.Value.ReactionCount)
+                    .Sum();
+
+                if (pinCount >= Constants.AmountOfPinsNeededToPin)
+                    await usrMsg.PinAsync();
             }
+        }
+
+        private static bool EmoteIsAPin(IEmote emote)
+        {
+            return emote.Name.Equals("📌") || emote.Name.Equals("📍");
         }
     }
 }
