@@ -70,17 +70,9 @@
     </game-info>
 
     <game-info>
-        <name>Phasmophobia</name>
-        <role>Phasmophobia</role>
-        <color>080808</color>
-        <image>https://cdn.cloudflare.steamstatic.com/steam/apps/739630/header.jpg</image>
-    </game-info>
-
-    <game-info>
         <name>Party Animals</name>
         <role>Party Animals</role>
         <color>F55BF5</color>
         <image>https://cdn.cloudflare.steamstatic.com/steam/apps/1260320/header.jpg</image>
-    </game-info>
-    
+    </game-info>    
 </games>

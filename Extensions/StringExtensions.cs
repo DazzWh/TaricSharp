@@ -33,5 +33,17 @@ namespace TaricSharp.Extensions
                 Convert.ToInt32(hexStr.Substring(4, 2), 16)
             );
         }
+
+        /// <summary>
+        /// Strips a string value from the start of a string
+        /// </summary>
+        /// <param name="str">The original string</param>
+        /// <param name="trimStr">The text to be trimmed from start</param>
+        /// <returns>String with trimStr removed</returns>
+        public static string TrimStart(this string str, string trimStr)
+        {
+            return  str.StartsWith(trimStr) ? str.Substring(trimStr.Length) : str;
+        }
+        
     }
 }

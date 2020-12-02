@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using TaricSharp.Extensions;
 
 namespace TaricSharp.Modules
 {
@@ -14,6 +15,10 @@ namespace TaricSharp.Modules
         public async Task GameAsync(
             [Summary("Game name")] [Remainder] string gameName)
         {
+            // Old versions had commands as `game add` or `game remove` instead of `game`
+            // Strip "add " or "remove " from game name
+            gameName = gameName.TrimStart("add ").TrimStart("remove ");
+
             var gameRole = Context.Guild.Roles
                 .FirstOrDefault(role => role.Color == Constants.GameRoleColor &&
                                         role.Name.Equals(gameName, StringComparison.OrdinalIgnoreCase));
